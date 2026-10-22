@@ -1,0 +1,102 @@
+<section class="section" id="descubrimiento" data-tone="amber">
+  <div class="shell">
+    <div class="section-head">
+      <span class="eyebrow">Origen</span>
+      <h2><span class="num">02</span>¿Por qué se descubrió y cuándo?</h2>
+      <p class="lede">
+        Tres fechas distintas: el código vulnerable nace en 2012, se descubre en agosto de 2026 y se convierte en
+        incidente mundial entre el 17 y el 22 de octubre, cuando se filtra y se empieza a explotar.
+      </p>
+    </div>
+
+    <div class="split">
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-date"><b>2012</b>origen</div>
+          <div class="tl-rail"><span class="tl-dot"></span></div>
+          <div class="tl-body">
+            <h4>PHP 5.4.0 introduce el código vulnerable</h4>
+            <p>Un patrón antiguo (Esser ya lo intuyó en 2004) que nadie supo explotar durante años.</p>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-date"><b>2020 · 2024</b>pistas</div>
+          <div class="tl-rail"><span class="tl-dot"></span></div>
+          <div class="tl-body">
+            <h4>Dos avisos que se quedaron en nada</h4>
+            <p>El bug #78876 (OOM con multipart) y la auditoría OSTIF/Quarkslab lo rozan, pero no se demuestra explotación.</p>
+          </div>
+        </div>
+
+        <div class="tl-item good">
+          <div class="tl-date"><b>1 ago 2026</b>hallazgo</div>
+          <div class="tl-rail"><span class="tl-dot"></span></div>
+          <div class="tl-body">
+            <h4>Calif y Wiz encuentran la cadena completa</h4>
+            <p>Con IA de frontera. El 11 de agosto se reporta a PHP con divulgación coordinada; el 14 se entrega un PoC.</p>
+          </div>
+        </div>
+
+        <div class="tl-item hot">
+          <div class="tl-date"><b>17 oct</b>primer ataque</div>
+          <div class="tl-rail"><span class="tl-dot"></span></div>
+          <div class="tl-body">
+            <h4>Amazon detecta explotación antes del parche</h4>
+            <p>Sus honeypots MadPot registran un intento desde una red de anonimización. Cuatro días antes de la divulgación.</p>
+          </div>
+        </div>
+
+        <div class="tl-item hot">
+          <div class="tl-date"><b>20 oct</b>filtración</div>
+          <div class="tl-rail"><span class="tl-dot"></span></div>
+          <div class="tl-body">
+            <h4>El embargo se rompe</h4>
+            <p>Los detalles circulan por foros y Hacker News. PHP adelanta el aviso y anuncia release de emergencia.</p>
+          </div>
+        </div>
+
+        <div class="tl-item good">
+          <div class="tl-date"><b>21 oct</b>parche</div>
+          <div class="tl-rail"><span class="tl-dot"></span></div>
+          <div class="tl-body">
+            <h4>Versiones corregidas y alerta de CISA</h4>
+            <p>Cloudflare ya había visto ataques a las 07:43 UTC, seis horas antes del parche de las 14:00 UTC.</p>
+          </div>
+        </div>
+
+        <div class="tl-item hot">
+          <div class="tl-date"><b>22 oct</b>ola</div>
+          <div class="tl-rail"><span class="tl-dot"></span></div>
+          <div class="tl-body">
+            <h4>Millones de intentos</h4>
+            <p>Amazon habla de explotación amplia; Corea del Sur eleva la alerta. Sin víctima confirmada ni entrada en el catálogo KEV.</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: grid; gap: 12px">
+        <div class="panel pad">
+          <h3 style="font-size: 1rem; margin-bottom: 6px">Lo que cambió: la IA</h3>
+          <p class="muted" style="font-size: 13.4px">
+            El fallo llevaba catorce años oculto porque explotarlo exigía encadenar varios bugs y adaptarse a cada
+            memoria. Calif (con OpenAI) y Wiz (con Gemini 4 Argon y GPT-5.6 Sol) lo resolvieron en días.
+          </p>
+        </div>
+        <div class="panel pad">
+          <h3 style="font-size: 1rem; margin-bottom: 6px">Quién lo encontró</h3>
+          <p class="muted" style="font-size: 13.4px">
+            Calif (Ryan Austin), Wiz Research y OpenAI, con la PHP Foundation coordinando el parche y la verificación.
+          </p>
+        </div>
+        <div class="callout warn" style="margin: 0">
+          <div class="glyph" aria-hidden="true">!</div>
+          <div>
+            <div class="title">La lección del embargo</div>
+            <div class="body">La filtración regaló a los atacantes un día de ventaja sin parche disponible.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

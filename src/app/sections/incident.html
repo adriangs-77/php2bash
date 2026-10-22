@@ -1,0 +1,90 @@
+<section class="section" id="vulnerabilidad" data-tone="coral">
+  <div class="shell">
+    <div class="section-head">
+      <span class="eyebrow">Anatomía</span>
+      <h2><span class="num">03</span>¿En qué consiste la vulnerabilidad?</h2>
+      <p class="lede">
+        Dos CVE, un mismo patrón: PHP publica estado antes de terminar de construirlo, algo falla de forma fatal y no
+        hay marcha atrás. La siguiente petición del mismo worker hereda basura y la trata como datos válidos.
+      </p>
+    </div>
+
+    <div class="flow g2" style="margin: 0 0 18px">
+        <div class="flow-step danger">
+          <div>
+            <div class="ft">El atacante fuerza un fatal</div>
+            <div class="fd">Una petición <span class="mono">multipart/form-data</span> agota <span class="mono">memory_limit</span> durante el arranque, antes de ejecutar tu código.</div>
+          </div>
+        </div>
+        <div class="flow-step danger">
+          <div>
+            <div class="ft">El worker sobrevive con punteros colgantes</div>
+            <div class="fd">El fatal salta con <span class="mono">longjmp()</span>: no hay destructores ni rollback. El estado global sigue apuntando a memoria liberada.</div>
+          </div>
+        </div>
+        <div class="flow-step danger">
+          <div>
+            <div class="ft">La siguiente petición reclama esa memoria</div>
+            <div class="fd">Con asignaciones controladas rellena el hueco y PHP lo interpreta como estructuras legítimas.</div>
+          </div>
+        </div>
+        <div class="flow-step danger">
+          <div>
+            <div class="ft">Resultado</div>
+            <div class="fd">Ejecución de código con permisos del usuario web, o fuga de memoria de otras peticiones.</div>
+          </div>
+        </div>
+    </div>
+
+    <div class="grid g2">
+      <div class="card pad-lg" style="border-top: 3px solid var(--h-coral)">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px">
+          <span class="cve-chip">CVE-2026-109618</span>
+          <span class="pill bad">CVSS 9.2</span>
+        </div>
+        <h3 style="font-size: 1.05rem">Corrupción por OOM</h3>
+        <p class="muted" style="font-size: 13.5px">
+          Al agotarse la memoria, PHP queda a medio inicializar y la limpieza procesa datos inválidos.
+        </p>
+        <ul class="muted" style="font-size: 13.4px; margin-bottom: 0">
+          <li>Vector: <em>use-after-free</em> en <span class="mono">session.upload_progress</span>.</li>
+          <li>Impacto: RCE y fuga de memoria sin autenticación.</li>
+          <li>Demostrado en <span class="mono">mod_php</span>, WordPress, Drupal y Joomla.</li>
+        </ul>
+      </div>
+
+      <div class="card pad-lg" style="border-top: 3px solid var(--h-coral)">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px">
+          <span class="cve-chip">CVE-2026-109619</span>
+          <span class="pill bad">CVSS 9.2</span>
+        </div>
+        <h3 style="font-size: 1.05rem">Estado global obsoleto</h3>
+        <p class="muted" style="font-size: 13.5px">
+          El estado de una petición sobrevive a su memoria y una petición posterior lo usa antes de reiniciarlo.
+        </p>
+        <ul class="muted" style="font-size: 13.4px; margin-bottom: 0">
+          <li>Vectores: backtrace del último fatal y confusión de tipos en OPcache.</li>
+          <li>Impacto: RCE y corrupción compartida entre workers.</li>
+          <li>Ruta de sesión validada contra PHP-FPM.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grid g2" style="margin-top: 14px">
+      <div class="callout info" style="margin: 0">
+        <div class="glyph" aria-hidden="true">i</div>
+        <div>
+          <div class="title">Por qué se llama PHP2Shell / php2bash</div>
+          <div class="body">«PHP to shell»: es el nombre del exploit combinado que convierte una petición HTTP en una shell. Aquí el proyecto se llama <strong>php2bash</strong> por lo mismo.</div>
+        </div>
+      </div>
+      <div class="callout warn" style="margin: 0">
+        <div class="glyph" aria-hidden="true">≈</div>
+        <div>
+          <div class="title">No es un gusano tipo Log4Shell</div>
+          <div class="body">Complejidad alta (<span class="mono">AC:H</span>): hace falta conocer el objetivo y, a menudo, reintentar. Grave para un blanco concreto, poco útil para escanear Internet a ciegas.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

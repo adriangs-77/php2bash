@@ -1,0 +1,109 @@
+<section class="section" id="soluciones" data-tone="lime">
+  <div class="shell">
+    <div class="section-head">
+      <span class="eyebrow">Remediación</span>
+      <h2><span class="num">05</span>¿Qué soluciones existen?</h2>
+      <p class="lede">
+        Una sola completa: <strong>actualizar PHP y reiniciar los procesos</strong>. Todo lo demás reduce rutas
+        concretas y compra tiempo, pero no elimina la vulnerabilidad.
+      </p>
+    </div>
+
+    <div class="callout ok" style="margin-top: 0">
+      <div class="glyph" aria-hidden="true">1</div>
+      <div>
+        <div class="title">Orden correcto</div>
+        <div class="body">Parchear → reiniciar workers → verificar versión y proceso → buscar explotación previa → rotar secretos.</div>
+      </div>
+    </div>
+
+    <div class="grid g3" style="grid-template-columns: repeat(auto-fit, minmax(270px, 1fr))">
+      <div class="card">
+        <h3><span class="ico" aria-hidden="true">1</span>Paquetes del sistema</h3>
+        <p class="muted" style="font-size: 13.4px">
+          Actualiza también <span class="mono">-fpm</span>, <span class="mono">-cli</span> y extensiones. Luego
+          <span class="mono">systemctl restart</span>, no solo <span class="mono">reload</span>.
+        </p>
+        <app-code label="Debian / Ubuntu" [wrap]="true" [code]="debian" />
+      </div>
+
+      <div class="card">
+        <h3><span class="ico" aria-hidden="true">2</span>Contenedores</h3>
+        <p class="muted" style="font-size: 13.4px">
+          Cambiar la etiqueta no basta: reconstruye y recrea. En Sail, el <span class="mono">Dockerfile</span> parte de
+          <span class="mono">php:8.x-fpm</span>.
+        </p>
+        <app-code label="Docker / Sail" [wrap]="true" [code]="docker" />
+      </div>
+
+      <div class="card">
+        <h3><span class="ico" aria-hidden="true">3</span>Laravel en marcha</h3>
+        <p class="muted" style="font-size: 13.4px">
+          Octane, Horizon y colas tienen workers de larga vida: si cambió el binario, páralos y arráncalos.
+        </p>
+        <app-code label="artisan" [wrap]="true" [code]="laravelRestart" />
+      </div>
+    </div>
+
+    <div class="panel pad" style="margin-top: 14px">
+      <h3 style="font-size: 1.02rem; margin-bottom: 4px">Si no puedes parchear hoy: mitigaciones parciales</h3>
+      <p class="muted" style="font-size: 13.2px; margin-bottom: 14px">
+        Combinadas y con supervisión. <span class="mono">memory_limit=-1</span> quita la protección de memoria del host.
+      </p>
+
+      <div class="tabs" role="tablist" aria-label="Mitigaciones por componente" (keydown)="onKeydown($event)">
+        @for (t of tabs; track t.id) {
+          <button
+            type="button"
+            class="tab"
+            role="tab"
+            [id]="'tab-' + t.id"
+            [attr.aria-selected]="tab() === t.id"
+            [attr.aria-controls]="'panel-' + t.id"
+            [attr.tabindex]="tab() === t.id ? 0 : -1"
+            (click)="set(t.id)"
+          >
+            {{ t.label }}
+          </button>
+        }
+      </div>
+
+      <div
+        class="tab-panel"
+        role="tabpanel"
+        [id]="'panel-' + tab()"
+        [attr.aria-labelledby]="'tab-' + tab()"
+        tabindex="0"
+      >
+        <p class="tab-desc">{{ current().desc }}</p>
+        <app-code [label]="current().codeLabel" [wrap]="true" [code]="current().code" />
+      </div>
+
+      <p class="inline-note" style="margin-bottom: 0">
+        Bloquear multipart rompe subidas e importaciones. Si estás detrás de un CDN, comprueba que el origen no sea
+        accesible por otro subdominio.
+      </p>
+    </div>
+
+    <div class="grid g2" style="margin-top: 14px">
+      <div class="panel pad">
+        <h3 style="font-size: 1rem; margin-bottom: 6px">Ramas sin soporte</h3>
+        <p class="muted" style="font-size: 13.2px; margin-bottom: 0">
+          <strong>8.1 / 8.0 / 7.4:</strong> paquete con backport (Sury, Ubuntu Pro, Freexian, AlmaLinux, CloudLinux,
+          TuxCare, ZendPHP) o compilar desde las ramas <span class="mono">PHP-x.y-CVE-2026-109618-109619</span>.
+          <strong>7.3 y anteriores:</strong> no hay parche oficial; migrar o aislar.
+        </p>
+      </div>
+
+      <div class="panel pad">
+        <h3 style="font-size: 1rem; margin-bottom: 6px">Lo que no sirve</h3>
+        <ul class="muted" style="font-size: 13.2px; margin-bottom: 0">
+          <li>Actualizar Laravel, Angular o el CMS.</li>
+          <li>Ocultar errores con <span class="mono">display_errors</span> o <span class="mono">@</span>.</li>
+          <li>Configurar con <span class="mono">ini_set()</span> o <span class="mono">.user.ini</span>: llega tarde.</li>
+          <li>Confiar solo en el WAF.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,124 @@
+<section class="section" id="faq" data-tone="mint">
+  <div class="shell">
+    <div class="section-head">
+      <span class="eyebrow">Preguntas frecuentes</span>
+      <h2><span class="num">09</span>Dudas rápidas</h2>
+    </div>
+
+    <div class="faq">
+      <details class="faq-item">
+        <summary>¿Angular está afectado?</summary>
+        <div class="faq-body">
+          <p>No. Se ejecuta en el navegador o en Node. Solo revisa que ningún entorno apunte a un backend sin parchear y que el SSR no comparta contenedor con PHP.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>¿Hay que actualizar Laravel?</summary>
+        <div class="faq-body">
+          <p>No existe parche de Laravel porque el fallo está en PHP. Puedes tener la última versión del framework y seguir siendo vulnerable: actualiza el runtime (FPM, Octane, FrankenPHP) y la imagen base.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>¿Debemos desconectar la web?</summary>
+        <div class="faq-body">
+          <p>En general no. Los PoC públicos no funcionan contra una instalación por defecto y el ataque requiere conocer el objetivo. Si no puedes parchear en horas, el sistema es crítico y no tienes mitigaciones, restringir el acceso es una opción válida.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>¿Basta con un WAF?</summary>
+        <div class="faq-body">
+          <p>No. Bloquea vectores conocidos y gana tiempo, pero hay intentos de evasión y el tráfico llega a PHP antes de que tu app opine. Si el origen es accesible sin CDN, el WAF no cubre nada.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>¿Basta con desactivar <span class="mono">session.upload_progress</span>?</summary>
+        <div class="faq-body">
+          <p>No. Bloquea las rutas de sesión confirmadas, pero quedan variantes. Combínalo con <span class="mono">fatal_error_backtraces=0</span> (8.5), límites de multipart y supervisión. Nunca sustituye al parche.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Uso PHP 8.1 o 7.4: ¿qué hago?</summary>
+        <div class="faq-body">
+          <p>Paquete con backport de tu distribución o proveedor LTS, compilar desde las ramas oficiales con el parche, o migrar a 8.4/8.5. Para 7.3 y anteriores no hay parche: migrar o retirar de Internet.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>¿Qué privilegios obtiene un atacante?</summary>
+        <div class="faq-body">
+          <p>Los del usuario del servidor web. No es root, pero puede leer el <span class="mono">.env</span>, la base de datos, Redis y claves de API, escribir en la app y escalar desde ahí.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="fuentes" data-tone="sky">
+  <div class="shell">
+    <div class="section-head">
+      <span class="eyebrow">Referencias</span>
+      <h2><span class="num">10</span>Fuentes</h2>
+      <p class="lede">Avisos oficiales y análisis publicados entre el 20 y el 22 de octubre de 2026.</p>
+    </div>
+
+    <ul class="sources">
+      <li>
+        <a href="https://www.php.net/archive/2026.php#2026-10-21-5" target="_blank" rel="noopener">
+          <span class="idx">01</span>
+          <span><span class="st">Aviso oficial de PHP y versiones corregidas</span><span class="sd">php.net</span></span>
+        </a>
+      </li>
+      <li>
+        <a href="https://github.com/php/php-src/security/advisories/GHSA-w8hw-w9fx-j79w" target="_blank" rel="noopener">
+          <span class="idx">02</span>
+          <span><span class="st">GHSA-w8hw-w9fx-j79w · CVE-2026-109618</span><span class="sd">github.com/php/php-src</span></span>
+        </a>
+      </li>
+      <li>
+        <a href="https://github.com/php/php-src/security/advisories/GHSA-6wmf-4rv5-p3rp" target="_blank" rel="noopener">
+          <span class="idx">03</span>
+          <span><span class="st">GHSA-6wmf-4rv5-p3rp · CVE-2026-109619</span><span class="sd">github.com/php/php-src</span></span>
+        </a>
+      </li>
+      <li>
+        <a href="https://calif.io/php2shell/" target="_blank" rel="noopener">
+          <span class="idx">04</span>
+          <span><span class="st">Calif · análisis técnico y cronología</span><span class="sd">calif.io</span></span>
+        </a>
+      </li>
+      <li>
+        <a href="https://www.wiz.io/blog/php2shell-php-rce" target="_blank" rel="noopener">
+          <span class="idx">05</span>
+          <span><span class="st">Wiz Research · primitivas y papel de la IA</span><span class="sd">wiz.io</span></span>
+        </a>
+      </li>
+      <li>
+        <a href="https://blog.cloudflare.com/php-vulnerabilities-waf-protection/" target="_blank" rel="noopener">
+          <span class="idx">06</span>
+          <span><span class="st">Cloudflare · protecciones WAF</span><span class="sd">blog.cloudflare.com</span></span>
+        </a>
+      </li>
+      <li>
+        <a href="https://www.cisa.gov/news-events/alerts/2026/10/21/critical-vulnerabilities-php-require-immediate-patching" target="_blank" rel="noopener">
+          <span class="idx">07</span>
+          <span><span class="st">CISA · alerta del 21 de octubre</span><span class="sd">cisa.gov</span></span>
+        </a>
+      </li>
+      <li>
+        <a href="https://sansec.io/research/php2shell" target="_blank" rel="noopener">
+          <span class="idx">08</span>
+          <span><span class="st">Sansec · mitigaciones y backports</span><span class="sd">sansec.io</span></span>
+        </a>
+      </li>
+    </ul>
+
+    <p class="inline-note" style="margin-top: 14px">
+      Documento informativo elaborado el 22/10/2026. No sustituye al aviso oficial ni al criterio de tu equipo.
+    </p>
+  </div>
+</section>

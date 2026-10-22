@@ -1,0 +1,63 @@
+<section class="section" id="resumen" data-tone="mint">
+  <div class="shell">
+    <div class="section-head">
+      <span class="eyebrow">Resumen</span>
+      <h2><span class="num">01</span>El incidente en 60 segundos</h2>
+      <p class="lede">Qué pasó, a quién afecta y qué hacer, antes de entrar en detalle.</p>
+    </div>
+
+    <div class="split">
+      <div class="panel pad tinted">
+        <div style="display: flex; gap: 16px; align-items: flex-start; margin-bottom: 14px">
+          <div class="badge-severity">9.2</div>
+          <div>
+            <h3 style="font-size: 1.1rem; margin-bottom: 4px">Un fallo del motor, no de tu aplicación</h3>
+            <p class="muted" style="font-size: 13.8px">
+              Cuando una petición muere de golpe (por ejemplo al agotar <span class="mono">memory_limit</span>), PHP no
+              limpia todo su estado. El proceso reutilizado lo usa en la petición siguiente: eso permite leer memoria
+              ajena y ejecutar código como el usuario web (<span class="mono">www-data</span>).
+            </p>
+          </div>
+        </div>
+
+        <dl class="kv">
+          <dt>CVE</dt>
+          <dd class="mono">CVE-2026-109618 · CVE-2026-109619</dd>
+          <dt>Divulgación</dt>
+          <dd>Filtración el <strong>20 oct</strong>; parches el <strong>21 oct, 14:00 UTC</strong>.</dd>
+          <dt>Afecta a</dt>
+          <dd>PHP-FPM, <span class="mono">mod_php</span>, php-cgi, FrankenPHP y LiteSpeed (PHP ≥ 5.4).</dd>
+          <dt>Arreglo</dt>
+          <dd><strong>8.5.12 · 8.4.27 · 8.3.36 · 8.2.35</strong> + reiniciar workers.</dd>
+        </dl>
+
+        <div class="callout danger" style="margin-bottom: 0">
+          <div class="glyph" aria-hidden="true">!</div>
+          <div>
+            <div class="title">Un parche de Laravel no sirve</div>
+            <div class="body">El fallo está por debajo del framework. Solo actualizar PHP y reiniciar los procesos cierra la puerta.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: grid; gap: 12px; align-content: start">
+        <a class="card-link" href="#descubrimiento">
+          <span class="t">¿Por qué se descubrió? →</span>
+          <span class="d">Auditoría con IA, no una brecha. Cronología desde 2004.</span>
+        </a>
+        <a class="card-link" href="#vulnerabilidad">
+          <span class="t">¿En qué consiste? →</span>
+          <span class="d">OOM, estado obsoleto entre peticiones y fuga de memoria.</span>
+        </a>
+        <a class="card-link" href="#soluciones">
+          <span class="t">¿Qué soluciones hay? →</span>
+          <span class="d">Parcheo por despliegue y mitigaciones temporales.</span>
+        </a>
+        <a class="card-link" href="#deteccion">
+          <span class="t">¿Me han atacado? →</span>
+          <span class="d">Señales en logs, procesos y qué hacer si hay un hallazgo.</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

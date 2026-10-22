@@ -1,0 +1,80 @@
+<section class="section" id="contexto" data-tone="sky">
+  <div class="shell">
+    <div class="section-head">
+      <span class="eyebrow">Contexto</span>
+      <h2><span class="num">08</span>Lo que hace especial al incidente</h2>
+      <p class="lede">
+        Primer gran fallo de infraestructura descubierto y explotado con IA de frontera, en un ecosistema donde la
+        mayoría del PHP instalado está en ramas sin soporte.
+      </p>
+    </div>
+
+    <div class="grid g2">
+      <div class="panel pad">
+        <h3 style="font-size: 1rem; margin-bottom: 4px">La escala (Qualys, 12.000 clientes)</h3>
+        <div class="metric-row"><span class="mv">73 %</span><span class="ml">de las instalaciones expuestas a Internet.</span></div>
+        <div class="metric-row"><span class="mv">71 %</span><span class="ml">en versiones fin de vida (5.4–8.1).</span></div>
+        <div class="metric-row"><span class="mv">28 %</span><span class="ml">en ramas soportadas, sin actualizar.</span></div>
+        <div class="metric-row"><span class="mv">199 k</span><span class="ml">parcheadas en las primeras 12 horas.</span></div>
+      </div>
+
+      <div style="display: grid; gap: 12px">
+        <div class="callout info" style="margin: 0">
+          <div class="glyph" aria-hidden="true">i</div>
+          <div>
+            <div class="title">El punto de inflexión de la IA</div>
+            <div class="body">
+              El fallo existía desde 2012; lo nuevo es poder encontrarlo y adaptar el exploit a cada memoria en horas.
+              La complejidad ya no es una barrera práctica.
+            </div>
+          </div>
+        </div>
+        <div class="callout warn" style="margin: 0">
+          <div class="glyph" aria-hidden="true">⚠</div>
+          <div>
+            <div class="title">Ruido y estado incierto</div>
+            <div class="body">
+              Circulan PoC falsos y kits que no cubren las CVE. Amazon, watchTowr y Cloudflare reportan explotación;
+              no hay víctima confirmada ni entrada en el catálogo KEV de CISA.
+            </div>
+          </div>
+        </div>
+        <div class="callout ok" style="margin: 0">
+          <div class="glyph" aria-hidden="true">✓</div>
+          <div>
+            <div class="title">Respuesta del ecosistema</div>
+            <div class="body">
+              Distribuciones y proveedores LTS con parches previos, WAF de emergencia en Cloudflare, AWS, Fastly,
+              Imperva o Vercel, y alertas de CISA y CERT-EU el mismo día.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel pad tinted" style="margin-top: 14px">
+      <ul class="muted two-col-list" style="margin-bottom: 0">
+        <li><strong>El runtime es superficie.</strong> Inventaría intérprete, SAPI e imagen base.</li>
+        <li><strong>La CLI engaña.</strong> Mide el binario que atiende tráfico.</li>
+        <li><strong>Sin reinicio no hay parche.</strong></li>
+        <li><strong>Los EOL son deuda de seguridad.</strong> 8.2 termina el 31/12/2026.</li>
+        <li><strong>El WAF compra horas, no semanas.</strong></li>
+        <li><strong>Los secretos deben rotarse rápido.</strong></li>
+        <li><strong>La detección vive fuera de la app.</strong></li>
+        <li><strong>SLA en horas</strong> para CVE críticos del intérprete.</li>
+      </ul>
+    </div>
+
+    <div class="panel pad tinted" style="margin-top: 14px">
+      <span class="eyebrow">Conclusión</span>
+      <p class="big-quote">
+        «No se arregla en tu aplicación: se arregla en el servidor. Y no está arreglado hasta que reinicias los
+        procesos y revisas qué pasó mientras estabas vulnerable».
+      </p>
+      <p class="muted" style="font-size: 13.6px; margin-bottom: 0">
+        Para Twinteach: parchear PHP en todos los entornos, reiniciar workers, verificar con evidencias, buscar
+        explotación desde el 17 de octubre y rotar lo que el usuario web pudiera leer. Angular puede esperar; el intérprete, no.
+      </p>
+    </div>
+  </div>
+</section>

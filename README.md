@@ -1,59 +1,47 @@
-# Php2bash
+# php2bash · Dossier PHP2Shell
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.1.8.
+Aplicación Angular 22 (SSR) que documenta el incidente **PHP2Shell** — `CVE-2026-109618` y
+`CVE-2026-109619` — y su impacto en un stack **Angular + Laravel** como el de Twinteach.
 
-## Development server
+> El nombre `php2bash` es el del proyecto: *PHP → bash*, el objetivo final del exploit.
+> En el ecosistema el incidente se conoce como **PHP2Shell**.
 
-To start a local development server, run:
+## Contenido (formato breve)
 
-```bash
-ng serve
-```
+1. **Resumen** — qué pasó, a quién afecta y qué hacer.
+2. **Origen y cronología** — 2012 → agosto 2026 → 17–22 de octubre.
+3. **Anatomía del fallo** — OOM, estado obsoleto y las dos CVE.
+4. **Versiones** — tabla por rama + **verificador interactivo**.
+5. **Soluciones** — parcheo, reinicio y mitigaciones en pestañas.
+6. **Twintech (Angular + Laravel)** — seis pasos, comandos, script de triage y **checklist**.
+7. **Detección** — señales, comandos y matriz de decisión.
+8. **Contexto** — escala, IA y lecciones.
+9. **FAQ** — siete dudas rápidas.
+10. **Fuentes**.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Cada sección usa un acento de color propio (menta, ámbar, coral, azul, lima, violeta) sobre una base
+verde-pizarra oscura o clara. Sin imágenes: el peso visual lo llevan la tipografía, los degradados y el color.
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+## Desarrollo
 
 ```bash
-ng build
+npm install
+npm start          # ng serve · http://localhost:4200
+npm run build      # build de producción con SSR
+npm run serve:ssr:php2bash   # sirve el build SSR en :4000
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Notas técnicas
 
-## Running unit tests
+- Angular standalone + signals, control de flujo `@if`/`@for`/`@switch`, sin Zone.js.
+- SSR con hidratación; la interactividad (tema, scroll-spy, checklist, portapapeles) se inicializa
+  en `afterNextRender` para no romper la hidratación.
+- `allowedHosts: ["*"]` en `angular.json` está pensado para el entorno de preview; **restríngelo**
+  a tus dominios reales antes de desplegar en producción.
+- Sin dependencias de terceros más allá de Angular y Express.
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Descargo de responsabilidad
 
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Documento informativo elaborado con fuentes públicas el 22 de octubre de 2026. No es un aviso de
+seguridad oficial ni sustituye la evaluación de tu equipo. Verifica versiones y enlaces en la fuente
+primaria antes de actuar.

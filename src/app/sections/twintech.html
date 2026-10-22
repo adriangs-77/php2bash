@@ -1,0 +1,104 @@
+<section class="section" id="twintech" data-tone="violet">
+  <div class="shell">
+    <div class="section-head">
+      <span class="eyebrow">Caso práctico</span>
+      <h2><span class="num">06</span>Twintech: Angular + Laravel</h2>
+      <p class="lede">
+        Angular no está afectado (navegador o Node). Laravel tampoco tiene parche: el riesgo está en el
+        <strong>PHP que ejecuta el backend</strong>. Comprobar la protección es auditar ese runtime.
+      </p>
+    </div>
+
+    <div class="split">
+      <div>
+        <div class="grid g3" style="margin-bottom: 14px">
+          <div class="card">
+            <h3 style="font-size: 0.95rem"><span class="ico" aria-hidden="true">A</span>Angular</h3>
+            <p class="muted" style="font-size: 12.8px; margin-bottom: 6px">Navegador / SSR Node</p>
+            <span class="pill ok">No afectado</span>
+          </div>
+          <div class="card">
+            <h3 style="font-size: 0.95rem"><span class="ico" aria-hidden="true">L</span>Laravel</h3>
+            <p class="muted" style="font-size: 12.8px; margin-bottom: 6px">Código de aplicación</p>
+            <span class="pill warn">Sin parche propio</span>
+          </div>
+          <div class="card" style="border-color: color-mix(in srgb, var(--h-coral) 40%, transparent)">
+            <h3 style="font-size: 0.95rem"><span class="ico" aria-hidden="true" style="background: color-mix(in srgb, var(--h-coral) 18%, transparent); color: var(--h-coral)">P</span>PHP</h3>
+            <p class="muted" style="font-size: 12.8px; margin-bottom: 6px">FPM / Octane</p>
+            <span class="pill bad">Riesgo real</span>
+          </div>
+        </div>
+
+        <div class="panel pad" style="margin-bottom: 12px">
+          <h3 style="font-size: 1rem; margin-bottom: 8px">Los seis pasos, con evidencia</h3>
+          <div class="flow" style="margin: 0">
+            <div class="flow-step">
+              <div><div class="ft">Inventariar</div><div class="fd">Producción, staging, previews, CI, Sail, colas, Horizon, phpMyAdmin, backups.</div></div>
+            </div>
+            <div class="flow-step">
+              <div><div class="ft">Medir el SAPI web</div><div class="fd">No la CLI. En Octane o FrankenPHP el binario puede ser otro.</div></div>
+            </div>
+            <div class="flow-step">
+              <div><div class="ft">Parchear y reconstruir</div><div class="fd">Paquetes o imagen base nueva; en Forge, la versión de PHP del servidor.</div></div>
+            </div>
+            <div class="flow-step">
+              <div><div class="ft">Reiniciar y demostrarlo</div><div class="fd">La hora de arranque del proceso debe ser posterior al parche.</div></div>
+            </div>
+            <div class="flow-step">
+              <div><div class="ft">Probar lo crítico</div><div class="fd">Login, subidas, importaciones, pagos, webhooks y Horizon.</div></div>
+            </div>
+            <div class="flow-step">
+              <div><div class="ft">Buscar explotación y rotar</div><div class="fd">Logs desde el 17/10 y credenciales del usuario web.</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel pad" style="margin-bottom: 12px">
+          <h3 style="font-size: 1rem; margin-bottom: 2px">Comandos de comprobación</h3>
+          <app-code label="versión real y proceso vivo" [wrap]="true" [code]="verify" />
+        </div>
+
+        <div class="panel pad">
+          <h3 style="font-size: 1rem; margin-bottom: 2px">Script de triage (solo lectura)</h3>
+          <p class="muted" style="font-size: 13.2px">Úsalo tras parchear o si sospechas. Léelo antes y bórralo después.</p>
+          <app-code label="php2shell-triage.sh" [code]="script" />
+        </div>
+      </div>
+
+      <aside style="display: grid; gap: 12px">
+        <div class="panel pad tinted">
+          <h3 style="font-size: 1rem; margin-bottom: 4px">Checklist Twinteach</h3>
+          <p class="muted" style="font-size: 12.6px">Marca lo que puedas demostrar. Se guarda en este navegador.</p>
+          <ul class="checklist">
+            @for (item of checks; track item.id) {
+              <li>
+                <label class="check-item" [class.done]="done()[item.id]">
+                  <input type="checkbox" [checked]="!!done()[item.id]" (change)="toggle(item.id, $event)" />
+                  <span>
+                    <span class="ct">{{ item.title }}</span>
+                    <span class="cd">{{ item.detail }}</span>
+                  </span>
+                </label>
+              </li>
+            }
+          </ul>
+          <div class="progress-row">
+            <span class="progress-label"><b>{{ count() }}</b>/{{ checks.length }} · {{ pct() }} %</span>
+            <div class="progress-track" role="progressbar" [attr.aria-valuenow]="pct()" aria-valuemin="0" aria-valuemax="100">
+              <div class="progress-fill" [style.width.%]="pct()"></div>
+            </div>
+            <button type="button" class="icon-btn" (click)="reset()" title="Reiniciar" aria-label="Reiniciar checklist">↺</button>
+          </div>
+        </div>
+
+        <div class="callout info" style="margin: 0">
+          <div class="glyph" aria-hidden="true">i</div>
+          <div>
+            <div class="title">Angular: solo dos comprobaciones</div>
+            <div class="body">Que ningún entorno apunte a un backend sin parchear y que el SSR no comparta contenedor con PHP.</div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>

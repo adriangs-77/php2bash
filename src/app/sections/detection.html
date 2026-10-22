@@ -1,0 +1,70 @@
+<section class="section" id="deteccion" data-tone="amber">
+  <div class="shell">
+    <div class="section-head">
+      <span class="eyebrow">Detección</span>
+      <h2><span class="num">07</span>¿Han aprovechado la vulnerabilidad?</h2>
+      <p class="lede">
+        Un RCE deja rastro en logs y procesos. La <strong>fuga de memoria</strong>, no: sale en una cookie de respuesta
+        y el servidor no registra nada anómalo. Tu <span class="mono">laravel.log</span> no verá ninguno de los dos.
+      </p>
+    </div>
+
+    <div class="split">
+      <div>
+        <div class="grid g3" style="margin-bottom: 12px">
+          <div class="card">
+            <h3 style="font-size: 0.95rem"><span class="ico" aria-hidden="true">1</span>HTTP</h3>
+            <p class="muted" style="font-size: 12.8px; margin-bottom: 0">Multipart a rutas sin subidas, chunked sin longitud, ráfagas de 500 desde una IP.</p>
+          </div>
+          <div class="card">
+            <h3 style="font-size: 0.95rem"><span class="ico" aria-hidden="true">2</span>PHP</h3>
+            <p class="muted" style="font-size: 12.8px; margin-bottom: 0">OOM fatales, <span class="mono">in Unknown on line 0</span>, SIGSEGV, sesiones ilegibles.</p>
+          </div>
+          <div class="card">
+            <h3 style="font-size: 0.95rem"><span class="ico" aria-hidden="true">3</span>Proceso</h3>
+            <p class="muted" style="font-size: 12.8px; margin-bottom: 0">Shells o <span class="mono">curl</span> hijos de <span class="mono">php-fpm</span>, archivos nuevos, cron o claves SSH.</p>
+          </div>
+        </div>
+
+        <div class="panel pad">
+          <h3 style="font-size: 1rem; margin-bottom: 2px">Búsqueda en logs</h3>
+          <p class="muted" style="font-size: 13.2px">Empieza el 17/10/2026 y guarda la salida antes de que roten los logs.</p>
+          <app-code label="triaje · logs" [wrap]="true" [code]="hunt" />
+        </div>
+
+      </div>
+
+      <div style="display: grid; gap: 12px">
+        <div class="panel pad">
+          <h3 style="font-size: 1rem; margin-bottom: 8px">Matriz de decisión</h3>
+          <ul class="muted" style="font-size: 13.2px; margin-bottom: 0">
+            <li><strong>Solo sondeos:</strong> bloquear y vigilar.</li>
+            <li><strong>Multipart + OOM fatal:</strong> intento armado; busca el segundo paso.</li>
+            <li><strong>Worker por SIGSEGV:</strong> falló o se reinició; habrá reintentos.</li>
+            <li><strong>Shell hija del worker:</strong> RCE confirmado → respuesta a incidentes.</li>
+            <li><strong>Cookie PHPSESSID anómala:</strong> posible fuga → rotar todo.</li>
+            <li><strong>Nada con logs completos:</strong> no prueba que no hubo fuga.</li>
+          </ul>
+        </div>
+
+        <div class="panel pad">
+          <h3 style="font-size: 1rem; margin-bottom: 8px">Si hay un hallazgo</h3>
+          <div class="flow" style="margin: 0">
+            <div class="flow-step danger"><div><div class="ft">Preservar</div><div class="fd">Logs, configuración e instantánea antes de tocar nada.</div></div></div>
+            <div class="flow-step danger"><div><div class="ft">Contener</div><div class="fd">Aislar del tráfico y revocar credenciales de despliegue.</div></div></div>
+            <div class="flow-step"><div><div class="ft">Reconstruir</div><div class="fd">Servidor nuevo parcheado, despliegue desde el repositorio.</div></div></div>
+            <div class="flow-step"><div><div class="ft">Rotar y notificar</div><div class="fd">Secretos, sesiones y, si hay datos personales, RGPD (72 h).</div></div></div>
+          </div>
+        </div>
+
+        <div class="callout danger" style="margin: 0">
+          <div class="glyph" aria-hidden="true">!</div>
+          <div>
+            <div class="title">La fuga es invisible</div>
+            <div class="body">Si estuviste expuesto, no puedes demostrar que no se filtró nada: rota igualmente.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
