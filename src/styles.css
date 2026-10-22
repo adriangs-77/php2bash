@@ -377,7 +377,7 @@ details.faq-item,
 
 /* ---------- Hero ---------- */
 
-.hero { position: relative; padding: 46px 0 20px; overflow: hidden; }
+.hero { position: relative; padding: 46px 0 20px; overflow: clip; }
 .hero::before {
   content: '';
   position: absolute;
@@ -753,6 +753,7 @@ html[data-theme='light'] .code-wrap { background: #10191d; }
 @media (max-width: 1180px) {
   .code-wrap pre { font-size: 11.6px; }
 }
+.code-wrap pre,
 .code-wrap.wrap pre {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -779,9 +780,34 @@ kbd {
 /* ---------- Tables ---------- */
 
 .table-wrap {
+  position: relative;
   border: 1px solid var(--border);
   border-radius: var(--radius-m);
   overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--text) 28%, transparent) transparent;
+  /* pista visual: si hay más columnas a la derecha, se intuye */
+  background:
+    linear-gradient(to left, color-mix(in srgb, var(--tone) 9%, transparent), transparent 26px)
+      right / 26px 100% no-repeat,
+    transparent;
+}
+.table-wrap::-webkit-scrollbar { height: 8px; }
+.table-wrap::-webkit-scrollbar-track { background: transparent; }
+.table-wrap::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--text) 24%, transparent);
+  border-radius: 999px;
+}
+.table-wrap::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--text) 38%, transparent);
+}
+
+/* lo mismo para los bloques de código, si alguna vez se piden sin ajuste */
+.code-wrap pre::-webkit-scrollbar { height: 8px; }
+.code-wrap pre::-webkit-scrollbar-track { background: transparent; }
+.code-wrap pre::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
 }
 table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 540px; }
 thead th {

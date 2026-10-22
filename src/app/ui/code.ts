@@ -24,7 +24,8 @@ import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core
 export class CodeBlock {
   readonly code = input.required<string>();
   readonly label = input<string>('shell');
-  readonly wrap = input(false);
+  /** Por defecto el código se ajusta: así nunca queda texto cortado por el borde. */
+  readonly wrap = input(true);
   protected readonly copied = signal(false);
 
   async copy(): Promise<void> {
