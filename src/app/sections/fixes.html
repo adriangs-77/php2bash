@@ -17,31 +17,31 @@
       </div>
     </div>
 
-    <div class="grid g3">
+    <div class="grid g3" style="grid-template-columns: repeat(auto-fit, minmax(270px, 1fr))">
       <div class="card">
-        <h3><span class="ico" aria-hidden="true">⌗</span>Paquetes del sistema</h3>
+        <h3><span class="ico" aria-hidden="true">1</span>Paquetes del sistema</h3>
         <p class="muted" style="font-size: 13.4px">
           Actualiza también <span class="mono">-fpm</span>, <span class="mono">-cli</span> y extensiones. Luego
           <span class="mono">systemctl restart</span>, no solo <span class="mono">reload</span>.
         </p>
-        <app-code label="Debian / Ubuntu" [code]="debian" />
+        <app-code label="Debian / Ubuntu" [wrap]="true" [code]="debian" />
       </div>
 
       <div class="card">
-        <h3><span class="ico" aria-hidden="true">◫</span>Contenedores</h3>
+        <h3><span class="ico" aria-hidden="true">2</span>Contenedores</h3>
         <p class="muted" style="font-size: 13.4px">
           Cambiar la etiqueta no basta: reconstruye y recrea. En Sail, el <span class="mono">Dockerfile</span> parte de
           <span class="mono">php:8.x-fpm</span>.
         </p>
-        <app-code label="Docker / Sail" [code]="docker" />
+        <app-code label="Docker / Sail" [wrap]="true" [code]="docker" />
       </div>
 
       <div class="card">
-        <h3><span class="ico" aria-hidden="true">↻</span>Laravel en marcha</h3>
+        <h3><span class="ico" aria-hidden="true">3</span>Laravel en marcha</h3>
         <p class="muted" style="font-size: 13.4px">
           Octane, Horizon y colas tienen workers de larga vida: si cambió el binario, páralos y arráncalos.
         </p>
-        <app-code label="artisan" [code]="laravelRestart" />
+        <app-code label="artisan" [wrap]="true" [code]="laravelRestart" />
       </div>
     </div>
 
@@ -60,16 +60,16 @@
 
       @switch (tab()) {
         @case ('nginx') {
-          <div id="panel-nginx" role="tabpanel" aria-labelledby="tab-nginx"><app-code label="nginx" [code]="nginx" /></div>
+          <div id="panel-nginx" role="tabpanel" aria-labelledby="tab-nginx"><app-code label="nginx" [wrap]="true" [code]="nginx" /></div>
         }
         @case ('apache') {
-          <div id="panel-apache" role="tabpanel" aria-labelledby="tab-apache"><app-code label="Apache" [code]="apache" /></div>
+          <div id="panel-apache" role="tabpanel" aria-labelledby="tab-apache"><app-code label="Apache" [wrap]="true" [code]="apache" /></div>
         }
         @case ('fpm') {
-          <div id="panel-fpm" role="tabpanel" aria-labelledby="tab-fpm"><app-code label="pool de FPM" [code]="fpm" /></div>
+          <div id="panel-fpm" role="tabpanel" aria-labelledby="tab-fpm"><app-code label="pool de FPM" [wrap]="true" [code]="fpm" /></div>
         }
         @case ('waf') {
-          <div id="panel-waf" role="tabpanel" aria-labelledby="tab-waf"><app-code label="borde" [code]="waf" /></div>
+          <div id="panel-waf" role="tabpanel" aria-labelledby="tab-waf"><app-code label="borde" [wrap]="true" [code]="waf" /></div>
         }
       }
 

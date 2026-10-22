@@ -4,7 +4,7 @@ import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core
   selector: 'app-code',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="code-wrap">
+    <div class="code-wrap" [class.wrap]="wrap()">
       <div class="code-head">
         <span class="label">{{ label() }}</span>
         <button
@@ -24,6 +24,7 @@ import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core
 export class CodeBlock {
   readonly code = input.required<string>();
   readonly label = input<string>('shell');
+  readonly wrap = input(false);
   protected readonly copied = signal(false);
 
   async copy(): Promise<void> {

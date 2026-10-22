@@ -235,6 +235,7 @@ code, kbd, samp, pre { font-family: var(--font-mono); font-size: 0.855em; }
 }
 
 .grid { display: grid; gap: 14px; }
+.grid > *, .split > * { min-width: 0; }
 .g2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .g3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .g4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
@@ -345,7 +346,7 @@ code, kbd, samp, pre { font-family: var(--font-mono); font-size: 0.855em; }
 
 /* ---------- Hero ---------- */
 
-.hero { position: relative; padding: 46px 0 20px; }
+.hero { position: relative; padding: 46px 0 20px; overflow: hidden; }
 .hero::before {
   content: '';
   position: absolute;
@@ -498,7 +499,7 @@ code, kbd, samp, pre { font-family: var(--font-mono); font-size: 0.855em; }
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: var(--radius-m);
-  padding: 18px;
+  padding: 20px;
 }
 .card.pad-lg { padding: 22px; }
 .card h3 {
@@ -527,8 +528,18 @@ code, kbd, samp, pre { font-family: var(--font-mono); font-size: 0.855em; }
   border: 1px solid var(--border);
   border-radius: var(--radius-l);
   background: var(--panel);
+  padding: 22px;
 }
+/* compatibilidad: el padding ya vive en .panel */
 .panel.pad { padding: 22px; }
+.panel.flush { padding: 0; }
+
+/* el contenido nunca debe tocar el borde redondeado */
+.panel > :first-child,
+.card > :first-child,
+.callout > * > :first-child { margin-top: 0; }
+.panel > :last-child,
+.card > :last-child { margin-bottom: 0; }
 .panel.tinted {
   background:
     linear-gradient(150deg, color-mix(in srgb, var(--tone) 12%, transparent), transparent 62%),
@@ -610,6 +621,8 @@ code, kbd, samp, pre { font-family: var(--font-mono); font-size: 0.855em; }
 /* ---------- Pills ---------- */
 
 .pill {
+  background: transparent;
+  font-family: var(--font-mono);
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -621,7 +634,10 @@ code, kbd, samp, pre { font-family: var(--font-mono); font-size: 0.855em; }
   border: 1px solid var(--border);
   color: var(--muted);
   white-space: nowrap;
+  line-height: 1.3;
 }
+button.pill { cursor: pointer; transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease; }
+button.pill:hover { color: var(--text); border-color: var(--tone); background: color-mix(in srgb, var(--tone) 10%, transparent); }
 .pill.ok { color: var(--h-mint); border-color: color-mix(in srgb, var(--h-mint) 36%, transparent); background: color-mix(in srgb, var(--h-mint) 10%, transparent); }
 .pill.bad { color: var(--h-coral); border-color: color-mix(in srgb, var(--h-coral) 36%, transparent); background: color-mix(in srgb, var(--h-coral) 10%, transparent); }
 .pill.warn { color: var(--h-amber); border-color: color-mix(in srgb, var(--h-amber) 36%, transparent); background: color-mix(in srgb, var(--h-amber) 10%, transparent); }
@@ -666,8 +682,13 @@ html[data-theme='light'] .code-wrap { background: #10191d; }
   text-transform: uppercase;
   color: #8ba3a5;
   margin-right: auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .copy-btn {
+  flex: none;
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -683,6 +704,14 @@ html[data-theme='light'] .code-wrap { background: #10191d; }
 }
 .copy-btn:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
 .copy-btn.copied { border-color: rgba(95, 227, 192, 0.55); color: #5fe3c0; }
+.code-wrap { max-width: 100%; }
+@media (max-width: 1180px) {
+  .code-wrap pre { font-size: 11.6px; }
+}
+.code-wrap.wrap pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
 .code-wrap pre {
   margin: 0;
   padding: 14px 16px;
@@ -826,7 +855,7 @@ td .hl { color: var(--text); font-weight: 600; }
     linear-gradient(160deg, color-mix(in srgb, var(--tone) 12%, transparent), transparent 70%),
     var(--panel);
   border-radius: var(--radius-l);
-  padding: 22px;
+  padding: 24px;
 }
 .checker h3 { font-size: 1.1rem; margin-bottom: 4px; }
 .checker .hint { color: var(--muted); font-size: 13.5px; margin-bottom: 16px; }
