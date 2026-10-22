@@ -20,7 +20,7 @@ Aplicación Angular 22 (SSR) que documenta el incidente **PHP2Shell** — `CVE-2
 10. **Fuentes**.
 
 Cada sección usa un acento de color propio (menta, ámbar, coral, azul, lima, violeta) sobre una base
-verde-pizarra oscura o clara. Imágenes generadas en `public/images/` (hero, memoria, stack, detección).
+verde-pizarra oscura o clara. Sin imágenes: el peso visual lo llevan la tipografía, los degradados y el color.
 
 ## Desarrollo
 
