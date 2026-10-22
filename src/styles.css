@@ -95,6 +95,7 @@ html[data-theme='light'] {
 html {
   scroll-behavior: smooth;
   scroll-padding-top: calc(var(--nav-h) + 16px);
+  overflow-x: clip;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -107,6 +108,7 @@ html {
 
 body {
   margin: 0;
+  overflow-x: clip;
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-sans);
@@ -147,6 +149,7 @@ h1, h2, h3, h4 {
   text-wrap: balance;
 }
 
+p, li, dd, summary { overflow-wrap: break-word; }
 p { margin: 0 0 0.85rem; text-wrap: pretty; }
 p:last-child { margin-bottom: 0; }
 
@@ -245,7 +248,7 @@ code, kbd, samp, pre { font-family: var(--font-mono); font-size: 0.855em; }
   .section { padding-top: 46px; margin-top: 38px; }
 }
 @media (max-width: 640px) {
-  .shell { padding: 0 18px; }
+  .shell { padding: 0 22px; }
   .g2, .g3, .g4 { grid-template-columns: minmax(0, 1fr); }
 }
 
@@ -458,7 +461,7 @@ code, kbd, samp, pre { font-family: var(--font-mono); font-size: 0.855em; }
   overflow: hidden;
   background: linear-gradient(180deg, var(--panel), transparent);
 }
-.stat { padding: 18px 20px; border-right: 1px solid var(--border); }
+.stat { padding: 22px 24px; border-right: 1px solid var(--border); }
 .stat:last-child { border-right: 0; }
 .stat .k {
   font-family: var(--font-mono);
@@ -499,9 +502,9 @@ code, kbd, samp, pre { font-family: var(--font-mono); font-size: 0.855em; }
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: var(--radius-m);
-  padding: 20px;
+  padding: 24px;
 }
-.card.pad-lg { padding: 22px; }
+.card.pad-lg { padding: 26px; }
 .card h3 {
   font-size: 1rem;
   margin-bottom: 6px;
@@ -528,10 +531,10 @@ code, kbd, samp, pre { font-family: var(--font-mono); font-size: 0.855em; }
   border: 1px solid var(--border);
   border-radius: var(--radius-l);
   background: var(--panel);
-  padding: 22px;
+  padding: 28px;
 }
 /* compatibilidad: el padding ya vive en .panel */
-.panel.pad { padding: 22px; }
+.panel.pad { padding: 28px; }
 .panel.flush { padding: 0; }
 
 /* el contenido nunca debe tocar el borde redondeado */
@@ -551,7 +554,7 @@ code, kbd, samp, pre { font-family: var(--font-mono); font-size: 0.855em; }
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: 15px 17px;
+  padding: 18px 20px;
   border-radius: var(--radius-m);
   border: 1px solid var(--border);
   background: var(--panel);
@@ -571,7 +574,7 @@ code, kbd, samp, pre { font-family: var(--font-mono); font-size: 0.855em; }
   display: grid;
   grid-template-columns: 30px minmax(0, 1fr);
   gap: 12px;
-  padding: 15px 17px;
+  padding: 18px 22px;
   border-radius: var(--radius-m);
   border: 1px solid var(--border);
   background: var(--panel);
@@ -714,7 +717,7 @@ html[data-theme='light'] .code-wrap { background: #10191d; }
 }
 .code-wrap pre {
   margin: 0;
-  padding: 14px 16px;
+  padding: 16px 18px;
   overflow-x: auto;
   font-size: 12.4px;
   line-height: 1.65;
@@ -747,13 +750,13 @@ thead th {
   text-transform: uppercase;
   color: var(--faint);
   font-weight: 500;
-  padding: 10px 14px;
+  padding: 12px 18px;
   border-bottom: 1px solid var(--border);
   background: var(--panel);
   white-space: nowrap;
 }
 tbody td {
-  padding: 10px 14px;
+  padding: 13px 18px;
   border-bottom: 1px solid var(--border);
   color: var(--text-soft);
   vertical-align: top;
@@ -762,6 +765,7 @@ tbody tr:last-child td { border-bottom: 0; }
 tbody tr:hover td { background: rgba(255, 255, 255, 0.02); }
 html[data-theme='light'] tbody tr:hover td { background: rgba(20, 40, 40, 0.03); }
 td.mono, .mono { font-family: var(--font-mono); font-size: 0.9em; }
+.mono { overflow-wrap: anywhere; }
 td .hl { color: var(--text); font-weight: 600; }
 .row-bad td:first-child { box-shadow: inset 2px 0 0 var(--h-coral); }
 .row-ok td:first-child { box-shadow: inset 2px 0 0 var(--h-mint); }
@@ -805,7 +809,7 @@ td .hl { color: var(--text); font-weight: 600; }
   border: 1px solid var(--border);
   border-radius: 12px;
   background: var(--panel);
-  padding: 12px 15px;
+  padding: 16px 20px;
 }
 .tl-body h4 { font-size: 14px; margin-bottom: 2px; display: flex; flex-wrap: wrap; gap: 7px; align-items: center; }
 .tl-body p { font-size: 13.2px; color: var(--muted); margin: 0; }
@@ -855,7 +859,7 @@ td .hl { color: var(--text); font-weight: 600; }
     linear-gradient(160deg, color-mix(in srgb, var(--tone) 12%, transparent), transparent 70%),
     var(--panel);
   border-radius: var(--radius-l);
-  padding: 24px;
+  padding: 28px;
 }
 .checker h3 { font-size: 1.1rem; margin-bottom: 4px; }
 .checker .hint { color: var(--muted); font-size: 13.5px; margin-bottom: 16px; }
@@ -885,7 +889,7 @@ td .hl { color: var(--text); font-weight: 600; }
 .result {
   margin-top: 16px;
   border-radius: var(--radius-m);
-  padding: 16px;
+  padding: 20px;
   border: 1px solid var(--border);
   background: var(--bg-soft);
   display: grid;
@@ -926,7 +930,7 @@ td .hl { color: var(--text); font-weight: 600; }
   grid-template-columns: 20px minmax(0, 1fr);
   gap: 11px;
   align-items: start;
-  padding: 11px 13px;
+  padding: 14px 17px;
   border: 1px solid var(--border);
   border-radius: 11px;
   background: var(--panel);
@@ -973,7 +977,7 @@ html[data-theme='light'] .check-item input:checked::after { border-color: #fff; 
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
-  padding: 12px 14px;
+  padding: 14px 16px;
   border: 1px solid var(--border);
   border-radius: 11px;
   background: var(--panel);
@@ -1009,7 +1013,7 @@ details.faq-item[open] { border-color: color-mix(in srgb, var(--tone) 34%, var(-
 details.faq-item summary {
   list-style: none;
   cursor: pointer;
-  padding: 13px 16px;
+  padding: 16px 20px;
   font-weight: 600;
   font-size: 14px;
   display: flex;
@@ -1027,7 +1031,7 @@ details.faq-item summary::before {
   flex: none;
 }
 details.faq-item[open] summary::before { content: '−'; }
-.faq-body { padding: 0 16px 14px 40px; font-size: 13.6px; color: var(--text-soft); }
+.faq-body { padding: 0 20px 18px 48px; font-size: 13.6px; color: var(--text-soft); }
 
 /* ---------- Misc ---------- */
 
@@ -1052,7 +1056,7 @@ details.faq-item[open] summary::before { content: '−'; }
   grid-template-columns: 28px minmax(0, 1fr);
   gap: 12px;
   align-items: start;
-  padding: 11px 13px;
+  padding: 14px 17px;
   border: 1px solid var(--border);
   border-radius: 11px;
   background: var(--panel);
@@ -1114,7 +1118,7 @@ details.faq-item[open] summary::before { content: '−'; }
   display: grid;
   grid-template-columns: 22px minmax(0, 1fr);
   gap: 10px;
-  padding: 11px 14px;
+  padding: 14px 18px;
   border: 1px solid var(--border);
   border-radius: 11px;
   background: var(--panel);
@@ -1189,4 +1193,14 @@ details.faq-item[open] summary::before { content: '−'; }
   .code-wrap pre, .code-wrap .label, .copy-btn { color: #111 !important; }
   a { color: #111; }
   .card, .panel, .tl-body, .table-wrap { border-color: #ccc; background: #fff; }
+}
+
+
+/* ---------- Ajustes de espacio en pantallas pequeñas ---------- */
+@media (max-width: 640px) {
+  .panel, .panel.pad, .checker { padding: 22px 20px; }
+  .card, .card.pad-lg { padding: 20px; }
+  .callout { padding: 16px 18px; }
+  .tl-body { padding: 14px 16px; }
+  thead th, tbody td { padding-left: 14px; padding-right: 14px; }
 }
