@@ -479,6 +479,12 @@ details.faq-item,
   border-color: var(--border-strong);
 }
 .btn-ghost:hover { background: var(--panel-2); border-color: var(--tone); }
+.btn[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: none;
+}
+.btn[disabled]:hover { filter: none; }
 
 .stats {
   display: grid;
@@ -949,7 +955,30 @@ td .hl { color: var(--text); font-weight: 600; }
 }
 .checker h3 { font-size: 1.1rem; margin-bottom: 4px; }
 .checker .hint { color: var(--muted); font-size: 13.5px; margin-bottom: 16px; }
-.checker-form { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
+.checker-form {
+  display: flex;
+  gap: 16px 20px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+.checker-input .input { min-width: 210px; }
+.checker-examples { display: flex; gap: 6px; flex-wrap: wrap; }
+.checker-examples .pill {
+  cursor: pointer;
+  padding: 9px 11px;
+  font-size: 12px;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+.checker-examples .pill:hover {
+  color: var(--text);
+  border-color: var(--tone);
+  background: color-mix(in srgb, var(--tone) 12%, transparent);
+}
+.checker-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-left: auto; }
+@media (max-width: 720px) {
+  .checker-actions { margin-left: 0; width: 100%; }
+  .checker-actions .btn { flex: 1 1 auto; justify-content: center; }
+}
 .field { display: grid; gap: 5px; }
 .field label {
   font-family: var(--font-mono);

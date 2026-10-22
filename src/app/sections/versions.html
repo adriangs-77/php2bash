@@ -11,9 +11,9 @@
 
     <div class="checker">
       <h3>Verificador rápido</h3>
-      <p class="hint">Escribe la versión del SAPI que atiende tu web (o pulsa un ejemplo).</p>
-      <div class="checker-form">
-        <div class="field">
+      <p class="hint">Escribe la versión del SAPI que atiende tu web, pulsa un ejemplo para rellenarla y luego <strong>Revisar versión</strong>.</p>
+      <form class="checker-form" (submit)="onSubmit($event)">
+        <div class="field checker-input">
           <label for="php-version">Versión de PHP</label>
           <input
             id="php-version"
@@ -25,19 +25,34 @@
             [value]="version()"
             (input)="update($event)"
             placeholder="8.3.35"
+            aria-describedby="php-version-help"
           />
         </div>
+
         <div class="field">
-          <label>Ejemplos</label>
-          <div style="display: flex; gap: 5px; flex-wrap: wrap">
+          <label>Ejemplos (rellenan la caja)</label>
+          <div class="checker-examples">
             @for (e of examples; track e) {
-              <button type="button" class="pill" style="cursor: pointer; padding: 8px 10px" (click)="use(e)">{{ e }}</button>
+              <button type="button" class="pill" (click)="use(e)">{{ e }}</button>
             }
           </div>
         </div>
-      </div>
 
-      @if (touched()) {
+        <div class="checker-actions">
+          <button type="submit" class="btn btn-primary" [disabled]="!hasInput()">
+            Revisar versión
+            <span aria-hidden="true">→</span>
+          </button>
+          @if (version()) {
+            <button type="button" class="btn btn-ghost" (click)="clear()">Limpiar</button>
+          }
+        </div>
+      </form>
+      <span id="php-version-help" class="visually-hidden">
+        Escribe el número de versión de PHP y pulsa Revisar versión.
+      </span>
+
+      @if (checked()) {
         <div [class]="'result ' + verdict().status" role="status" aria-live="polite">
           <div class="badge" aria-hidden="true">{{ verdict().badge }}</div>
           <div>

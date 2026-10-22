@@ -26,7 +26,11 @@ const FIXED_LABEL: Record<string, string> = {
 };
 
 function parse(v: string): number[] | null {
-  const m = v.trim().match(/^(\d+)\.(\d+)(?:\.(\d+))?/);
+  const m = v
+    .trim()
+    .toLowerCase()
+    .replace(/^php\s*/, '')
+    .match(/^(\d+)\.(\d+)(?:\.(\d+))?/);
   if (!m) return null;
   return [Number(m[1]), Number(m[2]), Number(m[3] ?? 0)];
 }
@@ -46,7 +50,8 @@ function cmp(a: number[], b: number[]): number {
 })
 export class Versions {
   protected readonly version = signal('8.3.35');
-  protected readonly touched = signal(false);
+  /** El resultado solo se muestra al pulsar «Revisar» (o Enter). */
+  protected readonly checked = signal(false);
 
   protected readonly verdict = computed<Verdict>(() => {
     const raw = this.version();
@@ -80,9 +85,9 @@ export class Versions {
     }
 
     if (branch === '8.2' || branch === '8.3' || branch === '8.4' || branch === '8.5') {
-      const min = MIN[branch];
+      const minimum = MIN[branch];
       const fixed = FIXED_LABEL[branch];
-      if (cmp(v, min) >= 0) {
+      if (cmp(v, minimum) >= 0) {
         return {
           status: 'ok',
           badge: '✓',
@@ -143,13 +148,35 @@ rpm -qa | grep -i '^php'        # RHEL/Alma/Rocky
 apt changelog php8.3-fpm | grep -E '109618|109619'
 ps -o lstart= -p $(pgrep -f 'php-fpm: master' | head -1)`;
 
+  /** ¿Hay algo parseable en la caja? Habilita el botón. */
+  protected readonly hasInput = computed(() => parse(this.version()) !== null);
+
   protected update(event: Event): void {
-    this.touched.set(true);
     this.version.set((event.target as HTMLInputElement).value);
+    this.checked.set(false);
   }
 
+  /** Los ejemplos rellenan la caja; el resultado se pide con el botón. */
   protected use(value: string): void {
-    this.touched.set(true);
     this.version.set(value);
+    this.checked.set(false);
+    document.getElementById('php-version')?.focus();
+  }
+
+  protected onSubmit(event: Event): void {
+    event.preventDefault();
+    this.check();
+  }
+
+  protected check(): void {
+    if (this.hasInput()) {
+      this.checked.set(true);
+    }
+  }
+
+  protected clear(): void {
+    this.version.set('');
+    this.checked.set(false);
+    document.getElementById('php-version')?.focus();
   }
 }
