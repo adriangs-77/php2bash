@@ -51,27 +51,33 @@
         Combinadas y con supervisión. <span class="mono">memory_limit=-1</span> quita la protección de memoria del host.
       </p>
 
-      <div class="tabs" role="tablist" aria-label="Mitigaciones">
-        <button type="button" class="tab" role="tab" id="tab-nginx" [attr.aria-selected]="tab() === 'nginx'" aria-controls="panel-nginx" (click)="set('nginx')">nginx</button>
-        <button type="button" class="tab" role="tab" id="tab-apache" [attr.aria-selected]="tab() === 'apache'" aria-controls="panel-apache" (click)="set('apache')">Apache</button>
-        <button type="button" class="tab" role="tab" id="tab-fpm" [attr.aria-selected]="tab() === 'fpm'" aria-controls="panel-fpm" (click)="set('fpm')">php.ini / FPM</button>
-        <button type="button" class="tab" role="tab" id="tab-waf" [attr.aria-selected]="tab() === 'waf'" aria-controls="panel-waf" (click)="set('waf')">WAF</button>
+      <div class="tabs" role="tablist" aria-label="Mitigaciones por componente" (keydown)="onKeydown($event)">
+        @for (t of tabs; track t.id) {
+          <button
+            type="button"
+            class="tab"
+            role="tab"
+            [id]="'tab-' + t.id"
+            [attr.aria-selected]="tab() === t.id"
+            [attr.aria-controls]="'panel-' + t.id"
+            [attr.tabindex]="tab() === t.id ? 0 : -1"
+            (click)="set(t.id)"
+          >
+            {{ t.label }}
+          </button>
+        }
       </div>
 
-      @switch (tab()) {
-        @case ('nginx') {
-          <div id="panel-nginx" role="tabpanel" aria-labelledby="tab-nginx"><app-code label="nginx" [wrap]="true" [code]="nginx" /></div>
-        }
-        @case ('apache') {
-          <div id="panel-apache" role="tabpanel" aria-labelledby="tab-apache"><app-code label="Apache" [wrap]="true" [code]="apache" /></div>
-        }
-        @case ('fpm') {
-          <div id="panel-fpm" role="tabpanel" aria-labelledby="tab-fpm"><app-code label="pool de FPM" [wrap]="true" [code]="fpm" /></div>
-        }
-        @case ('waf') {
-          <div id="panel-waf" role="tabpanel" aria-labelledby="tab-waf"><app-code label="borde" [wrap]="true" [code]="waf" /></div>
-        }
-      }
+      <div
+        class="tab-panel"
+        role="tabpanel"
+        [id]="'panel-' + tab()"
+        [attr.aria-labelledby]="'tab-' + tab()"
+        tabindex="0"
+      >
+        <p class="tab-desc">{{ current().desc }}</p>
+        <app-code [label]="current().codeLabel" [wrap]="true" [code]="current().code" />
+      </div>
 
       <p class="inline-note" style="margin-bottom: 0">
         Bloquear multipart rompe subidas e importaciones. Si estás detrás de un CDN, comprueba que el origen no sea

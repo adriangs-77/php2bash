@@ -823,32 +823,82 @@ td .hl { color: var(--text); font-weight: 600; }
   .tl-body { grid-column: 2; }
 }
 
-/* ---------- Tabs ---------- */
+/* ---------- Tabs (control segmentado) ---------- */
 
 .tabs {
   display: flex;
-  gap: 5px;
   flex-wrap: wrap;
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 9px;
-  margin-bottom: 14px;
+  gap: 4px;
+  padding: 5px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--bg) 55%, transparent);
+  width: fit-content;
+  max-width: 100%;
 }
+
 .tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   border: 1px solid transparent;
   background: transparent;
-  color: var(--muted);
+  color: var(--text-soft);
   font-family: var(--font-mono);
-  font-size: 12px;
-  padding: 6px 12px;
-  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 500;
+  padding: 9px 16px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
 }
-.tab:hover { color: var(--text); background: var(--panel-2); }
+.tab::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.35;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.tab:hover {
+  color: var(--text);
+  background: var(--panel-2);
+}
+.tab:hover::before { opacity: 0.75; }
+.tab:focus-visible {
+  outline: 2px solid var(--tone);
+  outline-offset: 2px;
+}
 .tab[aria-selected='true'] {
   color: var(--accent-ink);
   background: var(--tone);
-  font-weight: 600;
+  font-weight: 700;
+  box-shadow: 0 4px 14px -6px color-mix(in srgb, var(--tone) 70%, transparent);
+}
+.tab[aria-selected='true']::before {
+  opacity: 1;
+  transform: scale(1.15);
+}
+
+.tab-panel {
+  animation: fade 0.2s ease;
+}
+.tab-panel:focus-visible { outline: 2px solid var(--tone); outline-offset: 4px; border-radius: 12px; }
+
+.tab-desc {
+  font-size: 13.4px;
+  color: var(--muted);
+  margin: 0 0 10px;
+  max-width: 76ch;
+}
+
+@media (max-width: 560px) {
+  .tabs { width: 100%; }
+  .tab { flex: 1 1 auto; justify-content: center; padding: 9px 12px; font-size: 12px; }
 }
 
 /* ---------- Checker ---------- */
