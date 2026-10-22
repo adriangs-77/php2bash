@@ -1,0 +1,265 @@
+<section class="section" id="faq">
+  <div class="shell">
+    <div class="section-head">
+      <span class="eyebrow">Preguntas frecuentes</span>
+      <h2><span class="num">09</span>Dudas que aparecen siempre</h2>
+      <p class="lede">Respuestas cortas a las preguntas que más se repiten en equipos con stacks como el de Twinteach.</p>
+    </div>
+
+    <div class="faq">
+      <details class="faq-item">
+        <summary>¿Angular está afectado por PHP2Shell?</summary>
+        <div class="faq-body">
+          <p>
+            No. Angular se ejecuta en el navegador del usuario y, si usas SSR, en Node.js. Ninguno de los dos pasa por
+            el intérprete PHP. No hay parche de Angular ni de npm que aplicar por esta CVE. Lo que sí debes revisar es
+            que el frontend no apunte a un backend sin parchear (entornos de preview, proxies de desarrollo,
+            <span class="mono">environment.ts</span>) y que el SSR no comparta contenedor con PHP.
+          </p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>¿Tengo que actualizar Laravel? ¿Existe un parche de Laravel?</summary>
+        <div class="faq-body">
+          <p>
+            No existe un parche de Laravel porque el fallo no está en Laravel: está en PHP. Puedes tener la última
+            versión del framework y seguir siendo vulnerable. Lo que hay que actualizar es el <strong>runtime PHP</strong>
+            (FPM, Octane, FrankenPHP) y, si procede, la imagen base del contenedor. Laravel 13.11 apareció en la lista de
+            aplicaciones donde se demostró el exploit, pero solo como ejemplo de aplicación real sobre PHP vulnerable.
+          </p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>¿Debemos desconectar Twinteach como hicieron algunos sitios neerlandeses?</summary>
+        <div class="faq-body">
+          <p>
+            En general, no. Varios análisis independientes señalan que la explotación masiva es menos probable de lo que
+            parecía: los PoC públicos no funcionan contra una instalación PHP por defecto y el ataque requiere conocer el
+            objetivo. Desconectar tiene un coste real y no corrige nada. La excepción razonable: si no puedes parchear en
+            horas, el sistema es un objetivo de alto valor y no tienes mitigaciones eficaces, restringir el acceso o
+            aislar el servicio es una opción válida hasta que puedas actualizar.
+          </p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>¿Puedo probar un PoC público contra mi propio servidor?</summary>
+        <div class="faq-body">
+          <p>
+            Solo en un entorno aislado y con autorización. En producción, un intento de explotación puede tumbar
+            workers, corromper sesiones y provocar una caída. Además circulan PoC falsos: algunos solo funcionan si
+            previamente añades al servidor una vulnerabilidad de inclusión de archivos, lo que invalida la prueba.
+            Para verificar, usa la versión y la configuración; no necesitas ejecutar el exploit.
+          </p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>¿Con un WAF estoy protegido?</summary>
+        <div class="faq-body">
+          <p>
+            No. Cloudflare, AWS, Fastly, Imperva y otros desplegaron reglas de emergencia que bloquean vectores
+            conocidos, y son útiles para ganar tiempo. Pero se han reportado intentos de evasión, las variantes pueden
+            cambiar y el tráfico llega a PHP antes de que tu aplicación opine. Además, si el origen es accesible sin pasar
+            por el CDN (un subdominio <span class="mono">direct.</span>, <span class="mono">staging.</span> o una IP
+            antigua), el WAF no cubre nada.
+          </p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>¿Basta con poner <span class="mono">session.upload_progress.enabled=0</span>?</summary>
+        <div class="faq-body">
+          <p>
+            No. Bloquea las rutas de sesión confirmadas, pero PHP advierte que quedan otras variantes (por ejemplo, el
+            backtrace de errores fatales en 8.5 o la confusión de tipos en OPcache). Si no puedes parchear, combínalo con
+            <span class="mono">fatal_error_backtraces=0</span> (solo 8.5), límites de tamaño y partes multipart,
+            <span class="mono">memory_limit=-1</span> con supervisión y, si es viable, el bloqueo de
+            <span class="mono">multipart/form-data</span> en el servidor web. Nada de eso sustituye al parche.
+          </p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Uso PHP 8.1 (o 7.4). ¿Qué hago si no hay versión oficial?</summary>
+        <div class="faq-body">
+          <p>
+            Hay tres caminos: (1) instalar un paquete con backport de tu distribución o proveedor (Sury, Ubuntu Pro,
+            Freexian ELTS, Remi, AlmaLinux, CloudLinux, TuxCare, ZendPHP); (2) compilar desde las ramas
+            <span class="mono">PHP-8.1-CVE-2026-109618-109619</span> (y equivalentes 8.0/7.4) del repositorio oficial;
+            (3) migrar a 8.4/8.5, que es la solución de fondo. Para PHP 7.3 y anteriores no hay parche oficial: hay que
+            migrar o retirar el servicio de Internet.
+          </p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>¿Y los CMS y herramientas que corren sobre PHP?</summary>
+        <div class="faq-body">
+          <p>
+            WordPress, Drupal, Joomla, MediaWiki, Magento, Nextcloud, phpMyAdmin, Roundcube, WHMCS, Symfony y Laravel
+            se vieron afectados por igual, aunque su código estuviera actualizado, porque el fallo está en el intérprete.
+            De hecho, se demostró RCE pre-autenticación contra varias de ellas. Actualizar el CMS no resuelve nada si el
+            PHP subyacente sigue vulnerable.
+          </p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>¿Qué privilegios consigue un atacante?</summary>
+        <div class="faq-body">
+          <p>
+            Los del usuario con el que corre el servidor web (<span class="mono">www-data</span>,
+            <span class="mono">apache</span>, <span class="mono">nginx</span>). No es root de entrada, pero puede leer el
+            <span class="mono">.env</span>, conectarse a la base de datos, acceder a Redis, usar claves de API, escribir
+            en directorios de la app y, desde ahí, escalar privilegios o moverse lateralmente. En muchos despliegues,
+            eso equivale al control total de la aplicación y los datos.
+          </p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>¿Cómo sé si mi hosting compartido está parcheado?</summary>
+        <div class="faq-body">
+          <p>
+            Pregunta al proveedor por la CVE y por la versión de PHP del pool que sirve tu sitio; no te fíes del número
+            que muestra el panel. Comprueba si puedes seleccionar una versión parcheada (8.4.27 o superior), si el
+            proveedor aplica backports (revisa su changelog) y si reinició FPM tras el parche. Si no obtienes una
+            respuesta clara, asume riesgo y valora migrar.
+          </p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>¿Tengo que rotar <span class="mono">APP_KEY</span> de Laravel?</summary>
+        <div class="faq-body">
+          <p>
+            Depende. Rotarla invalida sesiones y cookies, pero también hace ilegibles los datos cifrados con la clave
+            anterior. Si sospechas que alguien pudo leer el <span class="mono">.env</span>, hay que asumir que conoce
+            <span class="mono">APP_KEY</span> y todas las credenciales; en ese caso, planifica el re-cifrado y rota.
+            Lo que no se puede dejar pasar es una contraseña de base de datos o una clave de API expuesta.
+          </p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>¿Hay obligaciones legales si nos han atacado?</summary>
+        <div class="faq-body">
+          <p>
+            Si hubo acceso a datos personales, en la UE se aplica el RGPD: evaluación del riesgo y, si procede,
+            notificación a la autoridad de control en 72 horas y comunicación a los afectados. Si Twinteach entra en el
+            ámbito de NIS2, DORA o de la normativa sectorial, hay además obligaciones de notificación de incidentes.
+            Documenta la investigación y las medidas adoptadas: la trazabilidad importa tanto como la remediación.
+          </p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="fuentes">
+  <div class="shell">
+    <div class="section-head">
+      <span class="eyebrow">Referencias</span>
+      <h2><span class="num">10</span>Fuentes y lecturas</h2>
+      <p class="lede">
+        Avisos oficiales y análisis técnicos publicados entre el 20 y el 22 de octubre de 2026. La situación de
+        explotación cambia rápido: contrasta siempre con la fuente primaria.
+      </p>
+    </div>
+
+    <ul class="sources">
+      <li>
+        <a href="https://www.php.net/archive/2026.php#2026-10-21-5" target="_blank" rel="noopener">
+          <span class="idx">01</span>
+          <span><span class="st">PHP · Aviso oficial de seguridad y versiones corregidas</span><span class="sd">php.net — 21 oct 2026 · fuente primaria</span></span>
+        </a>
+      </li>
+      <li>
+        <a href="https://github.com/php/php-src/security/advisories/GHSA-w8hw-w9fx-j79w" target="_blank" rel="noopener">
+          <span class="idx">02</span>
+          <span><span class="st">GHSA-w8hw-w9fx-j79w · CVE-2026-109618 (OOM corruption)</span><span class="sd">github.com/php/php-src</span></span>
+        </a>
+      </li>
+      <li>
+        <a href="https://github.com/php/php-src/security/advisories/GHSA-6wmf-4rv5-p3rp" target="_blank" rel="noopener">
+          <span class="idx">03</span>
+          <span><span class="st">GHSA-6wmf-4rv5-p3rp · CVE-2026-109619 (stale global state)</span><span class="sd">github.com/php/php-src</span></span>
+        </a>
+      </li>
+      <li>
+        <a href="https://calif.io/php2shell/" target="_blank" rel="noopener">
+          <span class="idx">04</span>
+          <span><span class="st">Calif Research · A tale of two PHP remote vulnerabilities</span><span class="sd">calif.io — análisis técnico y cronología del descubrimiento</span></span>
+        </a>
+      </li>
+      <li>
+        <a href="https://www.wiz.io/blog/php2shell-php-rce" target="_blank" rel="noopener">
+          <span class="idx">05</span>
+          <span><span class="st">Wiz Research · PHP2Shell: AI uncovers critical RCE vulnerabilities</span><span class="sd">wiz.io — primitivas, demostraciones y papel de la IA</span></span>
+        </a>
+      </li>
+      <li>
+        <a href="https://blog.cloudflare.com/php-vulnerabilities-waf-protection/" target="_blank" rel="noopener">
+          <span class="idx">06</span>
+          <span><span class="st">Cloudflare · Protecciones WAF para PHP2Shell</span><span class="sd">blog.cloudflare.com</span></span>
+        </a>
+      </li>
+      <li>
+        <a href="https://blog.qualys.com/vulnerabilities-threat-research/2026/10/20/php-announces-critical-security-release-for-two-vulnerabilities" target="_blank" rel="noopener">
+          <span class="idx">07</span>
+          <span><span class="st">Qualys · Guía de exposición, mitigación y métricas</span><span class="sd">blog.qualys.com — datos de 167 M de instalaciones</span></span>
+        </a>
+      </li>
+      <li>
+        <a href="https://sansec.io/research/php2shell" target="_blank" rel="noopener">
+          <span class="idx">08</span>
+          <span><span class="st">Sansec · PHP2Shell: cronología, mitigaciones y backports</span><span class="sd">sansec.io</span></span>
+        </a>
+      </li>
+      <li>
+        <a href="https://www.cisa.gov/news-events/alerts/2026/10/21/critical-vulnerabilities-php-require-immediate-patching" target="_blank" rel="noopener">
+          <span class="idx">09</span>
+          <span><span class="st">CISA · Critical Vulnerabilities in PHP Require Immediate Patching</span><span class="sd">cisa.gov — alerta del 21 oct 2026</span></span>
+        </a>
+      </li>
+      <li>
+        <a href="https://aws.amazon.com/blogs/security/amazon-threat-intelligence-identifies-php2shell-exploitation-prior-to-public-disclosure-in-madpot/" target="_blank" rel="noopener">
+          <span class="idx">10</span>
+          <span><span class="st">Amazon Threat Intelligence · Explotación previa a la divulgación</span><span class="sd">aws.amazon.com — primer intento el 17 oct 2026</span></span>
+        </a>
+      </li>
+      <li>
+        <a href="https://securitylabs.datadoghq.com/articles/php2shell-critical-vulnerabilities-in-php/" target="_blank" rel="noopener">
+          <span class="idx">11</span>
+          <span><span class="st">Datadog Security Labs · Detección y remediación</span><span class="sd">securitylabs.datadoghq.com</span></span>
+        </a>
+      </li>
+      <li>
+        <a href="https://thehackernews.com/2026/10/php-issues-emergency-patches-for-two.html" target="_blank" rel="noopener">
+          <span class="idx">12</span>
+          <span><span class="st">The Hacker News · Parches de emergencia y primeros intentos</span><span class="sd">thehackernews.com</span></span>
+        </a>
+      </li>
+      <li>
+        <a href="https://laracraft.tech/en/blog/php2shell-were-you-hit-a-read-only-triage-script-for-your-server" target="_blank" rel="noopener">
+          <span class="idx">13</span>
+          <span><span class="st">Laracraft · ¿Te han atacado? Script de triage para Laravel</span><span class="sd">laracraft.tech</span></span>
+        </a>
+      </li>
+      <li>
+        <a href="https://en.wikipedia.org/wiki/PHP2Shell" target="_blank" rel="noopener">
+          <span class="idx">14</span>
+          <span><span class="st">Wikipedia · PHP2Shell</span><span class="sd">en.wikipedia.org — resumen y referencias cruzadas</span></span>
+        </a>
+      </li>
+    </ul>
+
+    <p class="inline-note" style="margin-top: 18px">
+      Documento elaborado el 22 de octubre de 2026 con información pública. No sustituye al aviso oficial de PHP ni al
+      criterio de tu equipo de seguridad. Las URLs y el estado de explotación pueden haber cambiado desde entonces.
+    </p>
+  </div>
+</section>
