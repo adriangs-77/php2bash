@@ -1,212 +1,90 @@
-<section class="section" id="twintech">
+<section class="section" id="twintech" data-tone="violet">
   <div class="shell">
     <div class="section-head">
       <span class="eyebrow">Caso práctico</span>
-      <h2><span class="num">06</span>Twintech: Angular en el frontend, Laravel en el backend</h2>
+      <h2><span class="num">06</span>Twintech: Angular + Laravel</h2>
       <p class="lede">
-        Traducción a un stack concreto. La buena noticia: <strong>Angular no está afectado</strong> —se ejecuta en el
-        navegador y, si usas SSR, en Node—. La mala: <strong>Laravel corre sobre PHP</strong>, y ahí está el fallo.
-        Comprobar la protección de Twinteach significa auditar el runtime PHP que sirve el backend, no el framework.
+        Angular no está afectado (navegador o Node). Laravel tampoco tiene parche: el riesgo está en el
+        <strong>PHP que ejecuta el backend</strong>. Comprobar la protección es auditar ese runtime.
       </p>
     </div>
 
     <div class="split">
       <div>
-        <div class="grid g3" style="margin-bottom: 18px">
+        <div class="grid g3" style="margin-bottom: 14px">
           <div class="card">
-            <h3 style="font-size: 0.98rem"><span class="ico" aria-hidden="true">A</span>Angular</h3>
-            <p class="muted" style="font-size: 13.5px; margin-bottom: 6px">Navegador y SSR en Node.</p>
-            <span class="pill ok">No afectado por la CVE</span>
+            <h3 style="font-size: 0.95rem"><span class="ico" aria-hidden="true">A</span>Angular</h3>
+            <p class="muted" style="font-size: 12.8px; margin-bottom: 6px">Navegador / SSR Node</p>
+            <span class="pill ok">No afectado</span>
           </div>
           <div class="card">
-            <h3 style="font-size: 0.98rem"><span class="ico" aria-hidden="true">L</span>Laravel</h3>
-            <p class="muted" style="font-size: 13.5px; margin-bottom: 6px">Código de aplicación en PHP.</p>
-            <span class="pill warn">No hay parche de Laravel</span>
+            <h3 style="font-size: 0.95rem"><span class="ico" aria-hidden="true">L</span>Laravel</h3>
+            <p class="muted" style="font-size: 12.8px; margin-bottom: 6px">Código de aplicación</p>
+            <span class="pill warn">Sin parche propio</span>
           </div>
-          <div class="card" style="border-color: color-mix(in srgb, var(--danger) 40%, transparent)">
-            <h3 style="font-size: 0.98rem"><span class="ico" aria-hidden="true" style="background: var(--danger-soft); color: var(--danger)">P</span>PHP</h3>
-            <p class="muted" style="font-size: 13.5px; margin-bottom: 6px">FPM, Octane o FrankenPHP.</p>
-            <span class="pill bad">Aquí está el riesgo real</span>
+          <div class="card" style="border-color: color-mix(in srgb, var(--h-coral) 40%, transparent)">
+            <h3 style="font-size: 0.95rem"><span class="ico" aria-hidden="true" style="background: color-mix(in srgb, var(--h-coral) 18%, transparent); color: var(--h-coral)">P</span>PHP</h3>
+            <p class="muted" style="font-size: 12.8px; margin-bottom: 6px">FPM / Octane</p>
+            <span class="pill bad">Riesgo real</span>
           </div>
         </div>
 
-        <app-code label="arquitectura de Twinteach y dónde vive el fallo" [code]="arch" />
+        <figure class="figure" style="margin-bottom: 16px">
+          <img
+            src="images/stack.jpg"
+            alt="Dos capas flotantes: una placa violeta translúcida sobre un bloque inferior con borde verde luminoso"
+            width="1376"
+            height="768"
+            loading="lazy"
+          />
+          <figcaption>El fallo vive en la capa de abajo; la de arriba no puede arreglarlo.</figcaption>
+        </figure>
 
-        <div class="callout info">
-          <div class="glyph" aria-hidden="true">i</div>
-          <div>
-            <div class="title">El detalle que suele confundir</div>
-            <div class="body">
-              Actualizar <span class="mono">laravel/framework</span>, cambiar el frontend o revisar
-              <span class="mono">npm audit</span> no aporta nada frente a PHP2Shell. El ataque se ejecuta
-              <strong>antes de que <span class="mono">public/index.php</span> exista</strong>: cuando el worker de PHP
-              parsea el cuerpo multipart de la petición. Ninguna línea de Laravel llega a ejecutarse en la fase vulnerable.
+        <div class="panel pad" style="margin-bottom: 12px">
+          <h3 style="font-size: 1rem; margin-bottom: 8px">Los seis pasos, con evidencia</h3>
+          <div class="flow" style="margin: 0">
+            <div class="flow-step">
+              <div><div class="ft">Inventariar</div><div class="fd">Producción, staging, previews, CI, Sail, colas, Horizon, phpMyAdmin, backups.</div></div>
+            </div>
+            <div class="flow-step">
+              <div><div class="ft">Medir el SAPI web</div><div class="fd">No la CLI. En Octane o FrankenPHP el binario puede ser otro.</div></div>
+            </div>
+            <div class="flow-step">
+              <div><div class="ft">Parchear y reconstruir</div><div class="fd">Paquetes o imagen base nueva; en Forge, la versión de PHP del servidor.</div></div>
+            </div>
+            <div class="flow-step">
+              <div><div class="ft">Reiniciar y demostrarlo</div><div class="fd">La hora de arranque del proceso debe ser posterior al parche.</div></div>
+            </div>
+            <div class="flow-step">
+              <div><div class="ft">Probar lo crítico</div><div class="fd">Login, subidas, importaciones, pagos, webhooks y Horizon.</div></div>
+            </div>
+            <div class="flow-step">
+              <div><div class="ft">Buscar explotación y rotar</div><div class="fd">Logs desde el 17/10 y credenciales del usuario web.</div></div>
             </div>
           </div>
         </div>
 
-        <h3 style="font-size: 1.2rem; margin: 30px 0 6px">Los ocho pasos, en orden</h3>
-        <p class="muted" style="font-size: 14px; margin-bottom: 18px">
-          Cada paso produce una evidencia verificable. Si no puedes demostrar el resultado con un comando o un registro,
-          no está hecho.
-        </p>
-
-        <div class="panel" style="padding: 24px; margin-bottom: 16px">
-          <div style="display: flex; gap: 14px; align-items: baseline; margin-bottom: 8px">
-            <span class="mono" style="color: var(--accent); font-size: 13px">PASO 01</span>
-            <h3 style="font-size: 1.1rem">Delimitar dónde corre PHP</h3>
-          </div>
-          <p class="muted" style="font-size: 14px">
-            El error más común es parchear producción y olvidar el resto. En Twinteach, revisa como mínimo:
-          </p>
-          <div class="table-wrap">
-            <table style="min-width: 0">
-              <thead><tr><th scope="col">Dónde</th><th scope="col">Por qué importa</th></tr></thead>
-              <tbody>
-                <tr><td class="hl">Producción (FPM / Octane)</td><td>Superficie principal: atiende Internet.</td></tr>
-                <tr><td class="hl">Staging y previews</td><td>Suelen estar accesibles y con datos reales. Muchas veces sin WAF.</td></tr>
-                <tr><td class="hl">Contenedores Sail locales y CI</td><td>Una imagen antigua reintroduce el riesgo en cada despliegue o en cada <span class="mono">composer install</span>.</td></tr>
-                <tr><td class="hl">Colas, Horizon, scheduler</td><td>Usan el mismo binario. No escuchan HTTP, pero comparten imagen y configuración.</td></tr>
-                <tr><td class="hl">Herramientas heredadas</td><td>phpMyAdmin, un WordPress antiguo en <span class="mono">/blog</span>, paneles del hosting.</td></tr>
-                <tr><td class="hl">Backups y snapshots</td><td>Restaurar una imagen anterior puede devolver un PHP vulnerable.</td></tr>
-              </tbody>
-            </table>
-          </div>
+        <div class="panel pad" style="margin-bottom: 12px">
+          <h3 style="font-size: 1rem; margin-bottom: 2px">Comandos de comprobación</h3>
+          <app-code label="versión real y proceso vivo" [code]="verify" />
         </div>
 
-        <div class="panel" style="padding: 24px; margin-bottom: 16px">
-          <div style="display: flex; gap: 14px; align-items: baseline; margin-bottom: 8px">
-            <span class="mono" style="color: var(--accent); font-size: 13px">PASO 02</span>
-            <h3 style="font-size: 1.1rem">Medir la versión real y el SAPI</h3>
-          </div>
-          <p class="muted" style="font-size: 14px">
-            La versión del <span class="mono">php</span> de la CLI (la que usa <span class="mono">artisan</span>) puede
-            ser distinta de la que atiende las peticiones. En Octane o FrankenPHP el intérprete vive dentro de un
-            proceso de larga vida y el binario puede ser otro.
-          </p>
-          <app-code label="identificación en el backend de Twinteach" [code]="identify" />
-        </div>
-
-        <div class="panel" style="padding: 24px; margin-bottom: 16px">
-          <div style="display: flex; gap: 14px; align-items: baseline; margin-bottom: 8px">
-            <span class="mono" style="color: var(--accent); font-size: 13px">PASO 03</span>
-            <h3 style="font-size: 1.1rem">Parchear y reconstruir</h3>
-          </div>
-          <p class="muted" style="font-size: 14px">
-            Host con paquetes del sistema: <span class="mono">apt</span>/<span class="mono">dnf</span> según el apartado 05.
-            Contenedor: cambia la imagen base y <strong>reconstruye</strong>. Forge/Envoyer: actualiza la versión de PHP
-            del servidor y vuelve a desplegar. Fija la plataforma en Composer para que CI no instale dependencias en una
-            versión distinta.
-          </p>
-          <app-code label="Docker / Sail / CI" [code]="rebuild" />
-        </div>
-
-        <div class="panel" style="padding: 24px; margin-bottom: 16px">
-          <div style="display: flex; gap: 14px; align-items: baseline; margin-bottom: 8px">
-            <span class="mono" style="color: var(--accent); font-size: 13px">PASO 04</span>
-            <h3 style="font-size: 1.1rem">Reiniciar y demostrar que el proceso vivo es nuevo</h3>
-          </div>
-          <p class="muted" style="font-size: 14px">
-            Con <span class="mono">octane:reload</span> se recargan workers, pero si cambió el binario conviene parar y
-            arrancar. En FPM, <span class="mono">reload</span> puede conservar el maestro; usa
-            <span class="mono">restart</span> cuando dudes. La evidencia es la <strong>hora de arranque</strong> del
-            proceso, posterior a la instalación.
-          </p>
-          <app-code label="verificación de versión y proceso" [code]="verify" />
-          <p class="inline-note" style="margin-bottom: 0">
-            Si usas la ruta temporal de comprobación, protégela por IP y <strong>elimínala</strong> al terminar. No
-            publiques <span class="mono">phpinfo()</span>.
-          </p>
-        </div>
-
-        <div class="panel" style="padding: 24px; margin-bottom: 16px">
-          <div style="display: flex; gap: 14px; align-items: baseline; margin-bottom: 8px">
-            <span class="mono" style="color: var(--accent); font-size: 13px">PASO 05</span>
-            <h3 style="font-size: 1.1rem">Verificación funcional</h3>
-          </div>
-          <p class="muted" style="font-size: 14px">
-            Un parche de PHP puede romper extensiones que no se reinstalan automáticamente. Prueba, como mínimo:
-          </p>
-          <ul class="muted two-col-list" style="font-size: 14px">
-            <li>Login, logout y refresh de tokens</li>
-            <li>Subida de archivos y avatares (multipart)</li>
-            <li>Importaciones CSV/Excel y exportaciones</li>
-            <li>Pasarela de pago y webhooks</li>
-            <li>Encolado y procesamiento en Horizon</li>
-            <li>Tareas programadas del scheduler</li>
-            <li>Sesiones y caché en Redis/DB</li>
-            <li>Octane: recarga y ausencia de errores 502</li>
-          </ul>
-          <div class="callout warn" style="margin-bottom: 0">
-            <div class="glyph" aria-hidden="true">!</div>
-            <div>
-              <div class="body">
-                Tras actualizar, es habitual ver <span class="mono">Call to undefined function mb_split()</span>:
-                la extensión <span class="mono">mbstring</span> aún no está habilitada para el binario nuevo. Comprueba
-                <span class="mono">php -m | grep mbstring</span> en el SAPI correcto e instala el paquete
-                <span class="mono">php8.x-mbstring</span> que corresponda.
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="panel" style="padding: 24px; margin-bottom: 16px">
-          <div style="display: flex; gap: 14px; align-items: baseline; margin-bottom: 8px">
-            <span class="mono" style="color: var(--accent); font-size: 13px">PASO 06</span>
-            <h3 style="font-size: 1.1rem">Endurecer el stack (defensa en profundidad)</h3>
-          </div>
-          <p class="muted" style="font-size: 14px">
-            El parche cierra esta CVE, no la siguiente. Aprovecha para dejar el backend en una postura mejor:
-            límites en el borde, errores no expuestos, contenedor con memoria acotada y permisos mínimos.
-          </p>
-          <app-code label="nginx + Laravel + contenedor" [code]="hardening" />
-          <p class="inline-note" style="margin-bottom: 0">
-            En Angular, lo urgente es garantizar que <strong>el frontend no puede alcanzar un backend sin parchear</strong>:
-            revisa <span class="mono">environment.ts</span>, proxies de desarrollo y despliegues de preview que apunten a
-            APIs antiguas. Y comprueba que el SSR (Node) no se ejecuta dentro del mismo contenedor que PHP.
-          </p>
-        </div>
-
-        <div class="panel" style="padding: 24px; margin-bottom: 16px">
-          <div style="display: flex; gap: 14px; align-items: baseline; margin-bottom: 8px">
-            <span class="mono" style="color: var(--accent); font-size: 13px">PASO 07</span>
-            <h3 style="font-size: 1.1rem">Buscar explotación previa y rotar secretos</h3>
-          </div>
-          <p class="muted" style="font-size: 14px; margin-bottom: 0">
-            El parche cierra la puerta, no expulsa a quien ya entró. Ve al <a href="#deteccion">apartado 07</a> y ejecuta
-            la búsqueda con el script de triage. Si aparece cualquier indicio —o si el sistema estuvo expuesto con
-            <span class="mono">mod_php</span>— trata el host como comprometido y rota credenciales.
-          </p>
-        </div>
-
-        <div class="panel" style="padding: 24px">
-          <div style="display: flex; gap: 14px; align-items: baseline; margin-bottom: 8px">
-            <span class="mono" style="color: var(--accent); font-size: 13px">PASO 08</span>
-            <h3 style="font-size: 1.1rem">Cerrar el círculo</h3>
-          </div>
-          <p class="muted" style="font-size: 14px; margin-bottom: 0">
-            Añade alertas (OOM, 500 agrupados, workers muertos por señal, procesos hijos inesperados), fija imágenes por
-            digest, activa actualizaciones automáticas de seguridad del sistema operativo y documenta un SLA: los CVE
-            críticos del intérprete se parchean en horas, no en semanas. Deja el runbook escrito antes de que llegue el próximo.
-          </p>
+        <div class="panel pad">
+          <h3 style="font-size: 1rem; margin-bottom: 2px">Script de triage (solo lectura)</h3>
+          <p class="muted" style="font-size: 13.2px">Úsalo tras parchear o si sospechas. Léelo antes y bórralo después.</p>
+          <app-code label="php2shell-triage.sh" [code]="script" />
         </div>
       </div>
 
-      <aside style="display: grid; gap: 16px">
-        <div class="panel" style="padding: 22px">
-          <h3 style="font-size: 1rem; margin-bottom: 12px">Checklist Twinteach</h3>
-          <p class="muted" style="font-size: 13px; margin-bottom: 0">
-            Marca lo que ya puedas demostrar. El progreso se guarda en este navegador.
-          </p>
+      <aside style="display: grid; gap: 12px">
+        <div class="panel pad tinted">
+          <h3 style="font-size: 1rem; margin-bottom: 4px">Checklist Twinteach</h3>
+          <p class="muted" style="font-size: 12.6px">Marca lo que puedas demostrar. Se guarda en este navegador.</p>
           <ul class="checklist">
             @for (item of checks; track item.id) {
               <li>
                 <label class="check-item" [class.done]="done()[item.id]">
-                  <input
-                    type="checkbox"
-                    [checked]="!!done()[item.id]"
-                    (change)="toggle(item.id, $event)"
-                  />
+                  <input type="checkbox" [checked]="!!done()[item.id]" (change)="toggle(item.id, $event)" />
                   <span>
                     <span class="ct">{{ item.title }}</span>
                     <span class="cd">{{ item.detail }}</span>
@@ -215,60 +93,23 @@
               </li>
             }
           </ul>
-
-          <div class="progress-row" style="margin-top: 16px">
-            <span class="progress-label"><b>{{ count() }}</b> / {{ checks.length }} · {{ pct() }} %</span>
+          <div class="progress-row">
+            <span class="progress-label"><b>{{ count() }}</b>/{{ checks.length }} · {{ pct() }} %</span>
             <div class="progress-track" role="progressbar" [attr.aria-valuenow]="pct()" aria-valuemin="0" aria-valuemax="100">
               <div class="progress-fill" [style.width.%]="pct()"></div>
             </div>
-            <button type="button" class="icon-btn" (click)="reset()" title="Reiniciar checklist" aria-label="Reiniciar checklist">
-              ↺
-            </button>
+            <button type="button" class="icon-btn" (click)="reset()" title="Reiniciar" aria-label="Reiniciar checklist">↺</button>
           </div>
-
-          @if (pct() === 100) {
-            <p class="inline-note" style="margin: 12px 0 0; color: var(--ok)">
-              Checklist completa. Guarda las evidencias (salidas de comandos, revisiones de logs) en el runbook del equipo.
-            </p>
-          }
         </div>
 
-        <div class="card">
-          <h3 style="font-size: 1rem">Veredicto en una frase</h3>
-          <p class="muted" style="font-size: 13.5px; margin-bottom: 0">
-            Twinteach estará protegido cuando el <strong>binario de PHP que atiende el backend</strong> sea una versión
-            corregida, los <strong>procesos se hayan reiniciado</strong>, el <strong>resto de entornos</strong> esté igual,
-            y puedas demostrar que <strong>no hubo explotación</strong> desde el 17 de octubre.
-          </p>
+        <div class="callout info" style="margin: 0">
+          <div class="glyph" aria-hidden="true">i</div>
+          <div>
+            <div class="title">Angular: solo dos comprobaciones</div>
+            <div class="body">Que ningún entorno apunte a un backend sin parchear y que el SSR no comparta contenedor con PHP.</div>
+          </div>
         </div>
       </aside>
-    </div>
-
-    <div class="panel" style="padding: 24px; margin-top: 22px">
-      <h3 style="font-size: 1.05rem; margin-bottom: 6px">Script de triage de solo lectura</h3>
-      <p class="muted" style="font-size: 14px; max-width: 82ch">
-        Revisa versiones, errores de memoria, workers muertos, archivos PHP inesperados en <span class="mono">public/</span>
-        y <span class="mono">storage/</span>, cambios en el repositorio, procesos hijos raros y persistencia. No modifica
-        nada, pero se ejecuta en el propio host: un atacante cuidadoso puede ocultarse. Sirve para descartar los casos
-        evidentes y decidir si hace falta investigación forense.
-      </p>
-      <app-code label="php2shell-triage.sh · adaptado a Laravel" [code]="script" />
-      <p class="inline-note" style="margin-bottom: 0">
-        Léelo antes de ejecutarlo (<span class="mono">less</span>) y bórralo después. Nunca hagas
-        <span class="mono">curl … | sudo bash</span> durante un incidente.
-      </p>
-    </div>
-
-    <div class="callout info">
-      <div class="glyph" aria-hidden="true">◎</div>
-      <div>
-        <div class="title">¿Y si Twinteach usa Laravel Octane o FrankenPHP?</div>
-        <div class="body">
-          Los workers son de larga vida y mantienen estado en memoria entre peticiones, lo que hace el escenario de
-          «estado obsoleto» más peligroso, no menos. Reiniciar es obligatorio tras actualizar. Además, como el proceso
-          no se recicla por petición, una corrupción puede persistir más tiempo y afectar a más usuarios.
-        </div>
-      </div>
     </div>
   </div>
 </section>

@@ -1,62 +1,31 @@
-<section class="section" id="descubrimiento">
+<section class="section" id="descubrimiento" data-tone="amber">
   <div class="shell">
     <div class="section-head">
-      <span class="eyebrow">Origen y cronología</span>
-      <h2><span class="num">02</span>¿Por qué se descubrió y cuándo ocurrió?</h2>
+      <span class="eyebrow">Origen</span>
+      <h2><span class="num">02</span>¿Por qué se descubrió y cuándo?</h2>
       <p class="lede">
-        Conviene separar tres preguntas que suelen mezclarse: cuándo nació el fallo (2012, con raíces en 2004),
-        cuándo se descubrió (agosto de 2026) y cuándo se convirtió en un incidente público y explotado
-        (17–21 de octubre de 2026). No hubo una brecha que revelara el problema: hubo una auditoría.
+        Tres fechas distintas: el código vulnerable nace en 2012, se descubre en agosto de 2026 y se convierte en
+        incidente mundial entre el 17 y el 22 de octubre, cuando se filtra y se empieza a explotar.
       </p>
     </div>
 
     <div class="split">
-      <div class="timeline" aria-label="Cronología del incidente">
+      <div class="timeline">
         <div class="tl-item">
-          <div class="tl-date"><b>2004</b>precedente</div>
+          <div class="tl-date"><b>2012</b>origen</div>
           <div class="tl-rail"><span class="tl-dot"></span></div>
           <div class="tl-body">
-            <h4>Stefan Esser documenta el primer RCE por <span class="mono">memory_limit</span></h4>
-            <p>
-              El investigador encuentra que agotar la memoria de PHP podía interrumpir el intérprete en un punto
-              inseguro. No publicó exploit: solo existieron versiones comerciales. Es la semilla conceptual del problema.
-            </p>
+            <h4>PHP 5.4.0 introduce el código vulnerable</h4>
+            <p>Un patrón antiguo (Esser ya lo intuyó en 2004) que nadie supo explotar durante años.</p>
           </div>
         </div>
 
         <div class="tl-item">
-          <div class="tl-date"><b>2020</b>pista</div>
+          <div class="tl-date"><b>2020 · 2024</b>pistas</div>
           <div class="tl-rail"><span class="tl-dot"></span></div>
           <div class="tl-body">
-            <h4>Bug #78876: variables largas en multipart provocan OOM</h4>
-            <p>
-              Se reporta que ciertas peticiones <span class="mono">multipart/form-data</span> agotan la memoria y dejan
-              archivos temporales sin limpiar. Se consideró un fallo menor de limpieza.
-            </p>
-          </div>
-        </div>
-
-        <div class="tl-item">
-          <div class="tl-date"><b>2024</b>casi</div>
-          <div class="tl-rail"><span class="tl-dot"></span></div>
-          <div class="tl-body">
-            <h4>La auditoría OSTIF / Quarkslab vuelve a encontrar el patrón</h4>
-            <p>
-              Se identifica un fallo relacionado con el OOM, pero <strong>no se demuestra explotación</strong>, así que
-              no se corrige. La vulnerabilidad sigue viva en el código.
-            </p>
-          </div>
-        </div>
-
-        <div class="tl-item">
-          <div class="tl-date"><b>30 jul 2026</b>inicio</div>
-          <div class="tl-rail"><span class="tl-dot"></span></div>
-          <div class="tl-body">
-            <h4>OpenAI invita a Calif a «Patch the Planet»</h4>
-            <p>
-              Calif elige PHP como objetivo de alto impacto y contacta con la PHP Foundation. Empieza la auditoría
-              con asistencia de modelos de lenguaje.
-            </p>
+            <h4>Dos avisos que se quedaron en nada</h4>
+            <p>El bug #78876 (OOM con multipart) y la auditoría OSTIF/Quarkslab lo rozan, pero no se demuestra explotación.</p>
           </div>
         </div>
 
@@ -64,143 +33,69 @@
           <div class="tl-date"><b>1 ago 2026</b>hallazgo</div>
           <div class="tl-rail"><span class="tl-dot"></span></div>
           <div class="tl-body">
-            <h4>Calif encuentra la primera cadena de RCE</h4>
-            <p>
-              Pocos días después de empezar: un fatal por OOM, varios puntos de interrupción del intérprete y una
-              ejecución de código contra WordPress. Luego aparecen variantes más fiables contra <span class="mono">mod_php</span>
-              y PHP-FPM.
-            </p>
-          </div>
-        </div>
-
-        <div class="tl-item">
-          <div class="tl-date"><b>11 ago 2026</b>divulgación coordinada</div>
-          <div class="tl-rail"><span class="tl-dot"></span></div>
-          <div class="tl-body">
-            <h4>Primer informe a PHP</h4>
-            <p>
-              El 14 de agosto se comparte un PoC de RCE y el 15 PHP confirma que funciona. El 21 se reporta el
-              segundo fallo. El 24, Wiz Research reporta los suyos de forma independiente. Se fija un embargo hasta
-              el 22 de octubre.
-            </p>
+            <h4>Calif y Wiz encuentran la cadena completa</h4>
+            <p>Con IA de frontera. El 11 de agosto se reporta a PHP con divulgación coordinada; el 14 se entrega un PoC.</p>
           </div>
         </div>
 
         <div class="tl-item hot">
-          <div class="tl-date"><b>17 oct 2026</b>primer ataque</div>
+          <div class="tl-date"><b>17 oct</b>primer ataque</div>
           <div class="tl-rail"><span class="tl-dot"></span></div>
           <div class="tl-body">
-            <h4>Amazon detecta un intento de explotación</h4>
-            <p>
-              Su red de honeypots <span class="mono">MadPot</span> registra tráfico de explotación cuatro días antes
-              de que exista parche público. Procede de una red comercial de anonimización. No se sabe si alguno de
-              esos intentos tuvo éxito.
-            </p>
+            <h4>Amazon detecta explotación antes del parche</h4>
+            <p>Sus honeypots MadPot registran un intento desde una red de anonimización. Cuatro días antes de la divulgación.</p>
           </div>
         </div>
 
         <div class="tl-item hot">
-          <div class="tl-date"><b>20 oct 2026</b>filtración</div>
+          <div class="tl-date"><b>20 oct</b>filtración</div>
           <div class="tl-rail"><span class="tl-dot"></span></div>
           <div class="tl-body">
             <h4>El embargo se rompe</h4>
-            <p>
-              Los detalles circulan en foros y en Hacker News; Calif había publicado por error un vídeo de
-              demostración. A las <strong>19:33 UTC</strong> el equipo de PHP emite un aviso previo de una release
-              de seguridad extraordinaria y adelanta la fecha de publicación.
-            </p>
-          </div>
-        </div>
-
-        <div class="tl-item hot">
-          <div class="tl-date"><b>21 oct · 07:43</b>explotación</div>
-          <div class="tl-rail"><span class="tl-dot"></span></div>
-          <div class="tl-body">
-            <h4>Cloudflare empieza a ver ataques</h4>
-            <p>
-              Más de seis horas antes de que exista el parche oficial. La ventana de exposición pública se abre
-              con el código todavía vulnerable y los detalles ya en la calle.
-            </p>
-          </div>
-        </div>
-
-        <div class="tl-item">
-          <div class="tl-date"><b>21 oct · 13:34</b>avisos</div>
-          <div class="tl-rail"><span class="tl-dot"></span></div>
-          <div class="tl-body">
-            <h4>Se publican los GHSA (26 minutos antes de lo previsto)</h4>
-            <p>
-              Los avisos de GitHub detallan las dos vulnerabilidades. La web de PHP se actualiza poco después.
-            </p>
+            <p>Los detalles circulan por foros y Hacker News. PHP adelanta el aviso y anuncia release de emergencia.</p>
           </div>
         </div>
 
         <div class="tl-item good">
-          <div class="tl-date"><b>21 oct · 14:00</b>parche</div>
+          <div class="tl-date"><b>21 oct</b>parche</div>
           <div class="tl-rail"><span class="tl-dot"></span></div>
           <div class="tl-body">
-            <h4>PHP 8.5.12, 8.4.27, 8.3.36 y 8.2.35</h4>
-            <p>
-              Se publican las versiones corregidas, CISA emite una alerta urgente y Cloudflare, AWS, Fastly, Imperva
-              y otros despliegan reglas de WAF de emergencia. Distribuciones y proveedores LTS publican sus backports.
-            </p>
+            <h4>Versiones corregidas y alerta de CISA</h4>
+            <p>Cloudflare ya había visto ataques a las 07:43 UTC, seis horas antes del parche de las 14:00 UTC.</p>
           </div>
         </div>
 
         <div class="tl-item hot">
-          <div class="tl-date"><b>22 oct 2026</b>consecuencias</div>
+          <div class="tl-date"><b>22 oct</b>ola</div>
           <div class="tl-rail"><span class="tl-dot"></span></div>
           <div class="tl-body">
-            <h4>«Explotado ampliamente en Internet»</h4>
-            <p>
-              Amazon afirma que ya se explota de forma masiva y que la divulgación pública no marca el inicio real
-              de los ataques. Corea del Sur eleva su nivel de alerta, varios sitios institucionales neerlandeses
-              (Tweakers, la Cámara de Representantes, el NCSC) se desconectan por precaución y se acumulan millones
-              de intentos. Aun así, no hay una víctima confirmada públicamente ni las CVE están en el catálogo KEV de CISA.
-            </p>
+            <h4>Millones de intentos</h4>
+            <p>Amazon habla de explotación amplia; Corea del Sur eleva la alerta. Sin víctima confirmada ni entrada en el catálogo KEV.</p>
           </div>
         </div>
       </div>
 
-      <div class="sticky-note" style="display: grid; gap: 16px">
-        <div class="card pad-lg">
-          <h3><span class="ico" aria-hidden="true">↯</span>¿Por qué se descubrió justo ahora?</h3>
-          <p class="muted">
-            El fallo llevaba catorce años ahí. Lo que cambió no fue PHP, sino la <strong>capacidad de encontrarlo y
-            explotarlo</strong>: encadenar cuatro rutinas de corrupción de memoria y adaptarlas a cada versión,
-            configuración y SAPI era «el límite de lo que un humano podía hacer en la práctica».
-          </p>
-          <ul class="muted" style="font-size: 14px; margin-bottom: 0">
-            <li><strong>Calif + OpenAI:</strong> auditoría de «Patch the Planet» guiada por la historia de bugs de PHP.</li>
-            <li><strong>Wiz Research:</strong> Wiz Atlas, Gemini 4 Argon y GPT-5.6 Sol para descubrir y validar.</li>
-            <li><strong>PHP Foundation:</strong> coordinó el parche y la verificación cruzada.</li>
-          </ul>
-        </div>
-
-        <div class="card pad-lg">
-          <h3><span class="ico" aria-hidden="true">⏱</span>¿Cuándo «ocurrió»?</h3>
-          <dl class="kv" style="grid-template-columns: 92px minmax(0, 1fr); font-size: 13.5px">
-            <dt>2012</dt><dd>Aparece el código vulnerable (PHP 5.4.0).</dd>
-            <dt>1 ago 2026</dt><dd>Se descubre y se reproduce.</dd>
-            <dt>17 oct 2026</dt><dd>Primer intento de explotación observado.</dd>
-            <dt>20 oct 2026</dt><dd>Se filtra y se vuelve público.</dd>
-            <dt>21 oct 2026</dt><dd>Parche disponible; ataques masivos.</dd>
-          </dl>
-        </div>
-
-        <div class="card pad-lg" style="border-color: color-mix(in srgb, var(--warn) 30%, transparent)">
-          <h3><span class="ico" aria-hidden="true">!</span>La lección del embargo</h3>
-          <p class="muted" style="margin-bottom: 0">
-            El plan era divulgar el 22 de octubre con parches listos. La filtración obligó a adelantarlo todo un día.
-            Resultado: horas de exposición con detalles públicos y sin actualización disponible. En incidentes así,
-            <strong>el reloj del atacante empieza antes que el del defensor</strong>.
+      <div style="display: grid; gap: 12px">
+        <div class="panel pad">
+          <h3 style="font-size: 1rem; margin-bottom: 6px">Lo que cambió: la IA</h3>
+          <p class="muted" style="font-size: 13.4px">
+            El fallo llevaba catorce años oculto porque explotarlo exigía encadenar varios bugs y adaptarse a cada
+            memoria. Calif (con OpenAI) y Wiz (con Gemini 4 Argon y GPT-5.6 Sol) lo resolvieron en días.
           </p>
         </div>
-
-        <figure style="margin: 0; padding: 4px 4px 0">
-          <blockquote class="big-quote">«Es la vulnerabilidad más grave que he encontrado».</blockquote>
-          <figcaption class="attrib">Ryan Austin, investigador de Calif (BBC)</figcaption>
-        </figure>
+        <div class="panel pad">
+          <h3 style="font-size: 1rem; margin-bottom: 6px">Quién lo encontró</h3>
+          <p class="muted" style="font-size: 13.4px">
+            Calif (Ryan Austin), Wiz Research y OpenAI, con la PHP Foundation coordinando el parche y la verificación.
+          </p>
+        </div>
+        <div class="callout warn" style="margin: 0">
+          <div class="glyph" aria-hidden="true">!</div>
+          <div>
+            <div class="title">La lección del embargo</div>
+            <div class="body">La filtración regaló a los atacantes un día de ventaja sin parche disponible.</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

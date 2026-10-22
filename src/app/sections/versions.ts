@@ -133,24 +133,15 @@ export class Versions {
 
   protected readonly examples = ['8.3.35', '8.4.27', '8.2.34', '7.4.33', '8.5.12'];
 
-  protected readonly identify = `# 1. Qué binario y qué SAPI atiende la web
-php -v                     # CLI: Composer, artisan, cron (orientativo)
-php-fpm8.3 -v              # el que importa si usas FPM (ajusta la ruta/versión)
-php -i | grep -E 'Server API|Loaded Configuration File'
+  protected readonly identify = `php -v                         # CLI (artisan, composer)
+php-fpm8.3 -v                  # el SAPI que atiende la web
+php -i | grep 'Server API'
 
-# 2. Versiones por paquete (Debian/Ubuntu · RHEL/Alma/Rocky)
-dpkg -l | grep -E '^ii\s+php'          rpm -qa | grep -i '^php'
+dpkg -l | grep -E '^ii\s+php'   # Debian/Ubuntu
+rpm -qa | grep -i '^php'        # RHEL/Alma/Rocky
 
-# 3. ¿Está el parche? El número puede no cambiar en backports
 apt changelog php8.3-fpm | grep -E '109618|109619'
-rpm -q --changelog php-fpm | grep -E '109618|109619'
-
-# 4. Procesos vivos y su hora de arranque (fin real de la ventana)
-pgrep -a -f 'php-fpm: master|apache2|frankenphp'
-ps -o pid,lstart,cmd -p $(pgrep -f 'php-fpm: master' | head -1)
-
-# 5. Contenedores: etiqueta y digest de la imagen en uso
-docker ps --format '{{.Image}}' | sort -u`;
+ps -o lstart= -p $(pgrep -f 'php-fpm: master' | head -1)`;
 
   protected update(event: Event): void {
     this.touched.set(true);

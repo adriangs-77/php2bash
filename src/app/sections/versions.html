@@ -1,21 +1,17 @@
-<section class="section" id="versiones">
+<section class="section" id="versiones" data-tone="sky">
   <div class="shell">
     <div class="section-head">
       <span class="eyebrow">Alcance</span>
       <h2><span class="num">04</span>¿A qué versiones afecta?</h2>
       <p class="lede">
-        A <strong>todo PHP que sirva peticiones HTTP y no esté parcheado</strong>, desde PHP 5.4.0 (2012) hasta las
-        versiones corregidas del 21 de octubre de 2026. Incluye ramas sin soporte, imágenes Docker, paneles de
-        hosting y PHP embebido en appliances. La versión de la CLI no es la que importa: importa la del SAPI web.
+        A todo PHP que sirva peticiones HTTP y no esté parcheado, desde 5.4.0 hasta las versiones corregidas.
+        Lo que cuenta es la versión del <strong>SAPI web</strong>, no la de la CLI.
       </p>
     </div>
 
     <div class="checker">
       <h3>Verificador rápido</h3>
-      <p class="hint">
-        Escribe la versión que devuelve tu SAPI web (<span class="mono">php-fpm -v</span>, <span class="mono">php -i</span>
-        o el panel de tu hosting) y te digo si está cubierta por el parche.
-      </p>
+      <p class="hint">Escribe la versión del SAPI que atiende tu web (o pulsa un ejemplo).</p>
       <div class="checker-form">
         <div class="field">
           <label for="php-version">Versión de PHP</label>
@@ -29,24 +25,20 @@
             [value]="version()"
             (input)="update($event)"
             placeholder="8.3.35"
-            aria-describedby="php-version-help"
           />
         </div>
         <div class="field">
           <label>Ejemplos</label>
-          <div style="display: flex; gap: 6px; flex-wrap: wrap">
+          <div style="display: flex; gap: 5px; flex-wrap: wrap">
             @for (e of examples; track e) {
-              <button type="button" class="pill" style="cursor: pointer; padding: 9px 11px" (click)="use(e)">
-                {{ e }}
-              </button>
+              <button type="button" class="pill" style="cursor: pointer; padding: 8px 10px" (click)="use(e)">{{ e }}</button>
             }
           </div>
         </div>
       </div>
-      <span id="php-version-help" class="visually-hidden">Introduce un número de versión de PHP, por ejemplo 8.3.35.</span>
 
       @if (touched()) {
-         <div [class]="'result ' + verdict().status" role="status" aria-live="polite">
+        <div [class]="'result ' + verdict().status" role="status" aria-live="polite">
           <div class="badge" aria-hidden="true">{{ verdict().badge }}</div>
           <div>
             <div class="headline">{{ verdict().headline }}</div>
@@ -55,7 +47,7 @@
                 <p>{{ line }}</p>
               }
               @if (verdict().action) {
-                <p style="margin-top: 10px"><strong>Acción:</strong> {{ verdict().action }}</p>
+                <p><strong>Acción:</strong> {{ verdict().action }}</p>
               }
             </div>
           </div>
@@ -63,117 +55,46 @@
       }
     </div>
 
-    <div class="table-wrap" style="margin-top: 22px">
+    <div class="table-wrap" style="margin-top: 16px">
       <table>
-        <caption class="visually-hidden">Estado de cada rama de PHP frente a PHP2Shell</caption>
         <thead>
-          <tr>
-            <th scope="col">Rama</th>
-            <th scope="col">Estado</th>
-            <th scope="col">Versión corregida</th>
-            <th scope="col">Qué hacer</th>
-          </tr>
+          <tr><th scope="col">Rama</th><th scope="col">Estado</th><th scope="col">Corregida en</th></tr>
         </thead>
         <tbody>
-          <tr class="row-ok">
-            <td class="mono hl">8.5</td>
-            <td><span class="pill ok">Soportada</span></td>
-            <td class="mono">8.5.12</td>
-            <td>Actualiza y reinicia los workers.</td>
-          </tr>
-          <tr class="row-ok">
-            <td class="mono hl">8.4</td>
-            <td><span class="pill ok">Soportada</span></td>
-            <td class="mono">8.4.27</td>
-            <td>Actualiza y reinicia los workers.</td>
-          </tr>
-          <tr class="row-ok">
-            <td class="mono hl">8.3</td>
-            <td><span class="pill ok">Soportada</span></td>
-            <td class="mono">8.3.36</td>
-            <td>Actualiza y reinicia los workers.</td>
-          </tr>
-          <tr class="row-warn">
-            <td class="mono hl">8.2</td>
-            <td><span class="pill warn">Solo seguridad · EOL 31/12/2026</span></td>
-            <td class="mono">8.2.35</td>
-            <td>Parchea ya y planifica el salto a 8.4/8.5 antes de fin de año.</td>
-          </tr>
-          <tr class="row-warn">
-            <td class="mono hl">8.1 / 8.0 / 7.4</td>
-            <td><span class="pill warn">Fin de vida</span></td>
-            <td class="mono">Sin release oficial</td>
-            <td>Backport de código fuente de PHP (ramas <span class="mono">PHP-8.1-CVE-2026-109618-109619</span>, etc.), paquete de la distribución, proveedor LTS o actualización de rama.</td>
-          </tr>
-          <tr class="row-bad">
-            <td class="mono hl">7.3 y anteriores<br /><span class="mono" style="font-size: 11px">(incl. 5.4–5.6)</span></td>
-            <td><span class="pill bad">Sin parche oficial</span></td>
-            <td class="mono">—</td>
-            <td>Migrar o retirar de Internet. Si es imposible a corto plazo: mitigaciones + aislamiento estricto del host.</td>
-          </tr>
+          <tr class="row-ok"><td class="mono hl">8.5 · 8.4 · 8.3</td><td><span class="pill ok">Soportadas</span></td><td class="mono">8.5.12 · 8.4.27 · 8.3.36</td></tr>
+          <tr class="row-warn"><td class="mono hl">8.2</td><td><span class="pill warn">EOL 31/12/2026</span></td><td class="mono">8.2.35</td></tr>
+          <tr class="row-warn"><td class="mono hl">8.1 · 8.0 · 7.4</td><td><span class="pill warn">Fin de vida</span></td><td>Backport de distribución o proveedor LTS</td></tr>
+          <tr class="row-bad"><td class="mono hl">7.3 y anteriores</td><td><span class="pill bad">Sin parche</span></td><td>Migrar o retirar de Internet</td></tr>
         </tbody>
       </table>
     </div>
 
-    <p class="inline-note" style="margin-top: 12px">
-      En paquetes de distribución y proveedores LTS el número de versión <strong>puede no cambiar</strong> aunque el
-      parche esté aplicado. Confirma siempre con el aviso del fabricante y su changelog
-      (<span class="mono">apt changelog</span>, <span class="mono">rpm -q --changelog</span>).
+    <p class="inline-note" style="margin-top: 10px">
+      En paquetes de distribución el número puede no cambiar aunque el parche esté aplicado: confirma en el changelog.
     </p>
 
-    <div class="grid g2" style="margin-top: 22px">
-      <div class="panel" style="padding: 24px">
-        <h3 style="font-size: 1.05rem; margin-bottom: 12px">Superficies afectadas (y su prioridad)</h3>
+    <div class="grid g2" style="margin-top: 16px">
+      <div class="panel pad">
+        <h3 style="font-size: 1rem; margin-bottom: 4px">Qué versión corre de verdad</h3>
+        <p class="muted" style="font-size: 13.2px">Conviven varias: CLI, FPM, contenedores y paneles. Parchea la que sirve tráfico.</p>
+        <app-code label="identificar el SAPI" [code]="identify" />
+      </div>
+
+      <div class="panel pad">
+        <h3 style="font-size: 1rem; margin-bottom: 10px">Superficies y prioridad</h3>
         <div class="table-wrap">
           <table style="min-width: 0">
-            <thead>
-              <tr><th scope="col">SAPI</th><th scope="col">Riesgo</th><th scope="col">Detalle</th></tr>
-            </thead>
             <tbody>
-              <tr class="row-bad">
-                <td class="mono hl">mod_php</td>
-                <td><span class="pill bad">Crítico</span></td>
-                <td>RCE demostrado con una petición no autenticada, antes de ejecutar la aplicación. Arbitrario para cualquier script PHP ≥ 7.3.</td>
-              </tr>
-              <tr class="row-bad">
-                <td class="mono hl">PHP-FPM</td>
-                <td><span class="pill bad">Alto-crítico</span></td>
-                <td>Ambas CVE. La ruta de sesión se validó contra FPM; el OOM es vulnerable por análisis. El estado sobrevive entre peticiones del mismo worker.</td>
-              </tr>
-              <tr class="row-warn">
-                <td class="mono hl">php-cgi · LiteSpeed · FrankenPHP</td>
-                <td><span class="pill warn">Alto</span></td>
-                <td>Procesos de larga vida y OPcache compartido: el estado corrupto puede persistir. Se consideran afectados.</td>
-              </tr>
-              <tr>
-                <td class="mono hl">CLI / solo scripts</td>
-                <td><span class="pill ok">Bajo</span></td>
-                <td>No accesible por HTTP, salvo daemons persistentes que reciban multipart de terceros.</td>
-              </tr>
+              <tr class="row-bad"><td class="mono hl">mod_php</td><td><span class="pill bad">Crítico</span></td><td>RCE con una petición, antes de la app.</td></tr>
+              <tr class="row-bad"><td class="mono hl">PHP-FPM</td><td><span class="pill bad">Alto</span></td><td>Ambas CVE; estado entre peticiones.</td></tr>
+              <tr class="row-warn"><td class="mono hl">LiteSpeed · FrankenPHP · CGI</td><td><span class="pill warn">Alto</span></td><td>OPcache compartido y procesos largos.</td></tr>
+              <tr><td class="mono hl">CLI</td><td><span class="pill ok">Bajo</span></td><td>No accesible por HTTP.</td></tr>
             </tbody>
           </table>
         </div>
-      </div>
-
-      <div class="panel" style="padding: 24px">
-        <h3 style="font-size: 1.05rem; margin-bottom: 6px">¿Qué versión corre de verdad?</h3>
-        <p class="muted" style="font-size: 14px">
-          En un servidor conviven varias: la CLI (Composer, <span class="mono">artisan</span>, cron), la de FPM (la web),
-          la de contenedores y la de utilidades del panel. La que hay que parchear es <strong>la que atiende tráfico</strong>.
+        <p class="inline-note" style="margin-top: 10px; margin-bottom: 0">
+          Se escapan del inventario: imágenes Docker viejas, staging, CI, PHP embebido en paneles y backups.
         </p>
-        <app-code label="identificar el PHP que sirve la web" [code]="identify" />
-      </div>
-    </div>
-
-    <div class="callout danger">
-      <div class="glyph" aria-hidden="true">!</div>
-      <div>
-        <div class="title">Casos que se escapan del inventario</div>
-        <div class="body">
-          Imágenes Docker antiguas que nadie reconstruye, PHP embebido en paneles (cPanel, Plesk, DirectAdmin),
-          appliances y cámaras, entornos de staging olvidados, runners de CI con <span class="mono">php:8.1</span>,
-          y las copias de seguridad restauradas sin actualizar. Cualquiera de ellos puede servir HTTP y estar expuesto.
-        </div>
       </div>
     </div>
   </div>

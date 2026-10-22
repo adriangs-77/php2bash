@@ -1,118 +1,79 @@
-<section class="section" id="contexto">
+<section class="section" id="contexto" data-tone="sky">
   <div class="shell">
     <div class="section-head">
       <span class="eyebrow">Contexto</span>
-      <h2><span class="num">08</span>Lo que hace especial a este incidente</h2>
+      <h2><span class="num">08</span>Lo que hace especial al incidente</h2>
       <p class="lede">
-        PHP2Shell no es solo un CVE crítico más. Es el primer gran fallo de infraestructura descubierto y explotado con
-        ayuda de IA de frontera, y llega a un ecosistema donde casi tres cuartas partes de las instalaciones están en
-        ramas sin soporte. Eso cambia las prioridades de cualquier equipo.
+        Primer gran fallo de infraestructura descubierto y explotado con IA de frontera, en un ecosistema donde la
+        mayoría del PHP instalado está en ramas sin soporte.
       </p>
     </div>
 
     <div class="grid g2">
-      <div class="panel" style="padding: 26px">
-        <h3 style="font-size: 1.1rem; margin-bottom: 6px">La escala, en números</h3>
-        <p class="muted" style="font-size: 14px">
-          Qualys analizó 12.000 clientes y 167 millones de instalaciones de PHP antes del parche:
-        </p>
-        <div>
-          <div class="metric-row"><span class="mv">73 %</span><span class="ml">de las instalaciones estaban en activos expuestos a Internet.</span></div>
-          <div class="metric-row"><span class="mv">71 %</span><span class="ml">corrían versiones fin de vida (5.4–8.1): la mayoría nunca tendrá parche del proyecto.</span></div>
-          <div class="metric-row"><span class="mv">28 %</span><span class="ml">estaban en ramas soportadas pero sin actualizar, con parche disponible.</span></div>
-          <div class="metric-row"><span class="mv">199 k</span><span class="ml">instalaciones parcheadas en las primeras 12 horas.</span></div>
-          <div class="metric-row"><span class="mv">70 %</span><span class="ml">de los sitios web del mundo usan PHP, según Wiz.</span></div>
-        </div>
-        <p class="inline-note" style="margin-top: 12px; margin-bottom: 0">
-          Traducción: la mayoría del riesgo no estaba en sitios «viejos y olvidados», sino en infraestructura moderna
-          que simplemente no se actualiza.
-        </p>
+      <div class="panel pad">
+        <h3 style="font-size: 1rem; margin-bottom: 4px">La escala (Qualys, 12.000 clientes)</h3>
+        <div class="metric-row"><span class="mv">73 %</span><span class="ml">de las instalaciones expuestas a Internet.</span></div>
+        <div class="metric-row"><span class="mv">71 %</span><span class="ml">en versiones fin de vida (5.4–8.1).</span></div>
+        <div class="metric-row"><span class="mv">28 %</span><span class="ml">en ramas soportadas, sin actualizar.</span></div>
+        <div class="metric-row"><span class="mv">199 k</span><span class="ml">parcheadas en las primeras 12 horas.</span></div>
       </div>
 
-      <div class="panel" style="padding: 26px">
-        <h3 style="font-size: 1.1rem; margin-bottom: 6px">El punto de inflexión de la IA</h3>
-        <p class="muted" style="font-size: 14px">
-          El fallo llevaba catorce años en el código. No apareció antes porque <strong>explotarlo era
-          extraordinariamente difícil</strong>: encadenar varios bugs, adaptarse a la disposición de memoria de cada
-          versión y configuración, y repetir el proceso para cada objetivo.
-        </p>
-        <p class="muted" style="font-size: 14px">
-          Calif usó modelos para auditar el código y generalizar el patrón («publicar estado, hacer algo que puede
-          fallar, no revertir»); Wiz usó Wiz Atlas, Gemini 4 Argon y GPT-5.6 Sol para encontrar, explotar y validar el
-          parche. En horas, no en meses.
-        </p>
-        <div class="callout info" style="margin-bottom: 0">
+      <div style="display: grid; gap: 12px">
+        <div class="callout info" style="margin: 0">
           <div class="glyph" aria-hidden="true">i</div>
           <div>
+            <div class="title">El punto de inflexión de la IA</div>
             <div class="body">
-              La conclusión de Wiz: la complejidad «ya no es una barrera significativa». Si un fallo de este tipo puede
-              encontrarse y adaptarse automáticamente, la ventana entre «parche disponible» y «explotación masiva» se
-              mide en horas.
+              El fallo existía desde 2012; lo nuevo es poder encontrarlo y adaptar el exploit a cada memoria en horas.
+              La complejidad ya no es una barrera práctica.
+            </div>
+          </div>
+        </div>
+        <div class="callout warn" style="margin: 0">
+          <div class="glyph" aria-hidden="true">⚠</div>
+          <div>
+            <div class="title">Ruido y estado incierto</div>
+            <div class="body">
+              Circulan PoC falsos y kits que no cubren las CVE. Amazon, watchTowr y Cloudflare reportan explotación;
+              no hay víctima confirmada ni entrada en el catálogo KEV de CISA.
+            </div>
+          </div>
+        </div>
+        <div class="callout ok" style="margin: 0">
+          <div class="glyph" aria-hidden="true">✓</div>
+          <div>
+            <div class="title">Respuesta del ecosistema</div>
+            <div class="body">
+              Distribuciones y proveedores LTS con parches previos, WAF de emergencia en Cloudflare, AWS, Fastly,
+              Imperva o Vercel, y alertas de CISA y CERT-EU el mismo día.
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="grid g3" style="margin-top: 18px">
-      <div class="card">
-        <h3><span class="ico" aria-hidden="true">⚑</span>Respuesta del ecosistema</h3>
-        <p class="muted" style="font-size: 13.5px">
-          Distribuciones y proveedores LTS recibieron los parches antes del anuncio. Cloudflare, AWS, Fastly, Imperva,
-          Akamai y Vercel publicaron reglas de WAF de emergencia. CISA emitió una alerta el mismo día; CERT-EU, el aviso
-          2026-018. La coordinación funcionó… salvo por la filtración.
-        </p>
-      </div>
-      <div class="card">
-        <h3><span class="ico" aria-hidden="true">⚠</span>Ruido y desinformación</h3>
-        <p class="muted" style="font-size: 13.5px">
-          Circularon PoC falsos (JFrog documentó varios), puntuaciones de 10.0 y kits de mitigación que no cubren las
-          CVE. Algunos «exploits» solo funcionaban tras añadir al servidor de pruebas una vulnerabilidad de inclusión
-          de archivos. Contrasta siempre con el aviso oficial y con la changelog del paquete.
-        </p>
-      </div>
-      <div class="card">
-        <h3><span class="ico" aria-hidden="true">◔</span>Lo que aún no está confirmado</h3>
-        <p class="muted" style="font-size: 13.5px">
-          No hay una víctima nombrada públicamente ni una brecha confirmada. Ninguna de las dos CVE está en el catálogo
-          KEV de CISA, aunque Amazon, watchTowr y Cloudflare reportan explotación. CISA declaró que no había observado
-          explotación al publicar su alerta. La situación cambia a diario.
-        </p>
-      </div>
+    <div class="panel pad tinted" style="margin-top: 14px">
+      <ul class="muted two-col-list" style="margin-bottom: 0">
+        <li><strong>El runtime es superficie.</strong> Inventaría intérprete, SAPI e imagen base.</li>
+        <li><strong>La CLI engaña.</strong> Mide el binario que atiende tráfico.</li>
+        <li><strong>Sin reinicio no hay parche.</strong></li>
+        <li><strong>Los EOL son deuda de seguridad.</strong> 8.2 termina el 31/12/2026.</li>
+        <li><strong>El WAF compra horas, no semanas.</strong></li>
+        <li><strong>Los secretos deben rotarse rápido.</strong></li>
+        <li><strong>La detección vive fuera de la app.</strong></li>
+        <li><strong>SLA en horas</strong> para CVE críticos del intérprete.</li>
+      </ul>
     </div>
 
-    <div class="panel" style="padding: 26px; margin-top: 18px">
-      <h3 style="font-size: 1.15rem; margin-bottom: 14px">Lecciones que sí aplican a Twinteach</h3>
-      <div class="grid g2">
-        <div>
-          <ul class="muted" style="font-size: 14px">
-            <li><strong>El runtime es parte de tu superficie.</strong> No basta con auditar tu código: hay que inventariar el intérprete, la imagen base y el SAPI.</li>
-            <li><strong>La versión de la CLI engaña.</strong> Mide siempre el binario que atiende tráfico y confirma la hora de arranque del proceso.</li>
-            <li><strong>Sin reinicio no hay parche.</strong> FPM, Apache, Octane y FrankenPHP necesitan workers nuevos.</li>
-            <li><strong>Los EOL son deuda de seguridad.</strong> PHP 8.1 ya no recibe soporte; 8.2 termina el 31/12/2026.</li>
-          </ul>
-        </div>
-        <div>
-          <ul class="muted" style="font-size: 14px">
-            <li><strong>El WAF compra horas, no semanas.</strong> Y solo si el origen no es accesible directamente.</li>
-            <li><strong>Los secretos deben poder rotarse rápido.</strong> Si rotar la base de datos lleva un día, el plan de respuesta no existe.</li>
-            <li><strong>La detección vive fuera de la app.</strong> Sin logs del SAPI y del sistema operativo, eres ciego.</li>
-            <li><strong>Los SLA de parcheo se miden en horas</strong> para CVE críticos explotados del intérprete.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="panel" style="padding: 30px; margin-top: 18px; background: linear-gradient(135deg, var(--accent-soft), transparent 60%), var(--panel)">
-      <span class="eyebrow" style="margin-bottom: 12px">Conclusión</span>
-      <p class="big-quote" style="margin-bottom: 14px">
-        «PHP2Shell no se arregla en tu aplicación: se arregla en el servidor. Y no se arregla del todo hasta que
-        reinicias los procesos y revisas lo que pasó mientras estabas vulnerable».
+    <div class="panel pad tinted" style="margin-top: 14px">
+      <span class="eyebrow">Conclusión</span>
+      <p class="big-quote">
+        «No se arregla en tu aplicación: se arregla en el servidor. Y no está arreglado hasta que reinicias los
+        procesos y revisas qué pasó mientras estabas vulnerable».
       </p>
-      <p class="muted" style="margin-bottom: 0; font-size: 14.5px; max-width: 80ch">
-        Para Twinteach, la respuesta cabe en una frase: parchear PHP en todos los entornos, reiniciar los workers,
-        verificar con evidencias, buscar explotación desde el 17 de octubre y rotar lo que el usuario web pudiera haber
-        leído. Angular puede esperar; el intérprete, no.
+      <p class="muted" style="font-size: 13.6px; margin-bottom: 0">
+        Para Twinteach: parchear PHP en todos los entornos, reiniciar workers, verificar con evidencias, buscar
+        explotación desde el 17 de octubre y rotar lo que el usuario web pudiera leer. Angular puede esperar; el intérprete, no.
       </p>
     </div>
   </div>

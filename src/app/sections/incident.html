@@ -1,185 +1,101 @@
-<section class="section" id="vulnerabilidad">
+<section class="section" id="vulnerabilidad" data-tone="coral">
   <div class="shell">
     <div class="section-head">
-      <span class="eyebrow">Anatomía del fallo</span>
+      <span class="eyebrow">Anatomía</span>
       <h2><span class="num">03</span>¿En qué consiste la vulnerabilidad?</h2>
       <p class="lede">
-        No hay inyección SQL ni XSS: el problema está en cómo PHP gestiona la memoria cuando una petición muere a
-        mitad. Dos CVE, un mismo patrón: <strong>publicar estado, hacer después algo que puede fallar y no deshacer lo
-        publicado si el fallo es fatal</strong>. La siguiente petición del mismo worker hereda basura y la trata como datos válidos.
+        Dos CVE, un mismo patrón: PHP publica estado antes de terminar de construirlo, algo falla de forma fatal y no
+        hay marcha atrás. La siguiente petición del mismo worker hereda basura y la trata como datos válidos.
       </p>
     </div>
 
-    <div class="panel" style="padding: 26px; margin-bottom: 22px">
-      <h3 style="font-size: 1.05rem; margin-bottom: 6px">El modelo mental: el worker que no olvida</h3>
-      <p class="muted" style="font-size: 14px; max-width: 80ch">
-        PHP-FPM y <span class="mono">mod_php</span> reutilizan procesos para atender muchas peticiones. Cada petición
-        tiene su propio <em>heap</em>, que se libera al terminar. Si un error fatal interrumpe el intérprete mediante
-        <span class="mono">longjmp()</span>, el código de limpieza no se ejecuta: ni destructores, ni rollback, ni
-        reinicio de contadores. Algunas variables globales siguen apuntando a memoria ya liberada.
-      </p>
-
-      <div class="flow" style="margin-bottom: 0">
+    <div class="split" style="margin-bottom: 18px">
+      <div class="flow" style="margin: 0">
         <div class="flow-step danger">
           <div>
-            <div class="ft">Petición A · el atacante fuerza un fatal</div>
-            <div class="fd">Una petición <span class="mono">multipart/form-data</span> hace que PHP agote <span class="mono">memory_limit</span> mientras inicializa estructuras internas o decodifica la sesión. El <em>heap</em> de la petición se destruye.</div>
+            <div class="ft">El atacante fuerza un fatal</div>
+            <div class="fd">Una petición <span class="mono">multipart/form-data</span> agota <span class="mono">memory_limit</span> durante el arranque, antes de ejecutar tu código.</div>
           </div>
         </div>
         <div class="flow-step danger">
           <div>
             <div class="ft">El worker sobrevive con punteros colgantes</div>
-            <div class="fd">El estado global (backtrace del último fatal, contexto del unserializer, <span class="mono">PS(id)</span> de la sesión, OPcache) no se reinicia. Apunta a direcciones que ya no le pertenecen.</div>
+            <div class="fd">El fatal salta con <span class="mono">longjmp()</span>: no hay destructores ni rollback. El estado global sigue apuntando a memoria liberada.</div>
           </div>
         </div>
         <div class="flow-step danger">
           <div>
-            <div class="ft">Petición B · el atacante reclama esa memoria</div>
-            <div class="fd">Con asignaciones controladas rellena el hueco con sus propios datos. El worker los interpreta como <em>bookkeeping</em> legítimo: obtiene lectura de memoria y primitivas de corrupción.</div>
+            <div class="ft">La siguiente petición reclama esa memoria</div>
+            <div class="fd">Con asignaciones controladas rellena el hueco y PHP lo interpreta como estructuras legítimas.</div>
           </div>
         </div>
         <div class="flow-step danger">
           <div>
-            <div class="ft">Resultado: ejecución de código o fuga de memoria</div>
-            <div class="fd">Encadenando fugas y escrituras se consigue <span class="mono">zend_call_function()</span> → una orden del sistema con los privilegios del usuario web. O simplemente se exfiltra memoria de otras peticiones.</div>
+            <div class="ft">Resultado</div>
+            <div class="fd">Ejecución de código con permisos del usuario web, o fuga de memoria de otras peticiones.</div>
           </div>
         </div>
       </div>
+
+      <figure class="figure">
+        <img
+          src="images/memory.jpg"
+          alt="Filas de bloques de memoria translúcidos con uno de ellos fracturado y un hilo rojo colgando"
+          width="1376"
+          height="768"
+          loading="lazy"
+        />
+        <figcaption>Uso tras liberación: el bloque liberado se vuelve a usar como si siguiera vivo.</figcaption>
+      </figure>
     </div>
 
     <div class="grid g2">
-      <div class="card pad-lg" style="border-top: 3px solid var(--danger)">
-        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px">
+      <div class="card pad-lg" style="border-top: 3px solid var(--h-coral)">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px">
           <span class="cve-chip">CVE-2026-109618</span>
           <span class="pill bad">CVSS 9.2</span>
         </div>
-        <h3 style="font-size: 1.15rem">Corrupción por OOM (<em>out-of-memory</em>)</h3>
-        <p class="muted">
-          El agotamiento de memoria interrumpe a PHP mientras los datos internos de la petición están solo
-          <strong>parcialmente inicializados</strong>. La rutina de limpieza posterior procesa ese estado inválido.
+        <h3 style="font-size: 1.05rem">Corrupción por OOM</h3>
+        <p class="muted" style="font-size: 13.5px">
+          Al agotarse la memoria, PHP queda a medio inicializar y la limpieza procesa datos inválidos.
         </p>
-        <ul class="muted" style="font-size: 14px">
-          <li><strong>Vector demostrado:</strong> <em>use-after-free</em> del unserializer de <span class="mono">session.upload_progress</span>.</li>
-          <li><strong>Consecuencia:</strong> RCE y, por separado, divulgación de memoria del proceso sin autenticación.</li>
-          <li><strong>Demostrado en:</strong> <span class="mono">mod_php</span> con scripts PHP arbitrarios (≥ 7.3) y RCE pre-autenticación en WordPress, Drupal y Joomla.</li>
+        <ul class="muted" style="font-size: 13.4px; margin-bottom: 0">
+          <li>Vector: <em>use-after-free</em> en <span class="mono">session.upload_progress</span>.</li>
+          <li>Impacto: RCE y fuga de memoria sin autenticación.</li>
+          <li>Demostrado en <span class="mono">mod_php</span>, WordPress, Drupal y Joomla.</li>
         </ul>
-        <div class="inline-note">GHSA-w8hw-w9fx-j79w · CWE-824</div>
       </div>
 
-      <div class="card pad-lg" style="border-top: 3px solid var(--danger)">
-        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px">
+      <div class="card pad-lg" style="border-top: 3px solid var(--h-coral)">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px">
           <span class="cve-chip">CVE-2026-109619</span>
           <span class="pill bad">CVSS 9.2</span>
         </div>
-        <h3 style="font-size: 1.15rem">Estado global obsoleto (<em>stale state</em>)</h3>
-        <p class="muted">
-          El estado interno propiedad de una petición <strong>sobrevive a la liberación de su memoria</strong>. Una
-          petición posterior, atendida por el mismo worker, lo usa antes de que la inicialización normal lo restablezca.
+        <h3 style="font-size: 1.05rem">Estado global obsoleto</h3>
+        <p class="muted" style="font-size: 13.5px">
+          El estado de una petición sobrevive a su memoria y una petición posterior lo usa antes de reiniciarlo.
         </p>
-        <ul class="muted" style="font-size: 14px">
-          <li><strong>Vectores:</strong> backtrace del último error fatal (<span class="mono">EG(last_fatal_error_backtrace)</span>) y confusión de tipos en OPcache compartido.</li>
-          <li><strong>Consecuencia:</strong> RCE; también <em>use-after-free</em> entre peticiones y corrupción de estado compartido entre workers.</li>
-          <li><strong>Demostrado en:</strong> RCE pre-autenticación en Drupal (backtrace) y WordPress (OPcache), además de la ruta de sesión validada contra PHP-FPM.</li>
+        <ul class="muted" style="font-size: 13.4px; margin-bottom: 0">
+          <li>Vectores: backtrace del último fatal y confusión de tipos en OPcache.</li>
+          <li>Impacto: RCE y corrupción compartida entre workers.</li>
+          <li>Ruta de sesión validada contra PHP-FPM.</li>
         </ul>
-        <div class="inline-note">GHSA-6wmf-4rv5-p3rp · CWE-824</div>
       </div>
     </div>
 
-    <div class="callout info">
-      <div class="glyph" aria-hidden="true">i</div>
-      <div>
-        <div class="title">¿Por qué se llama PHP2Shell (y php2bash)?</div>
-        <div class="body">
-          El nombre nace del exploit combinado que Wiz y Calif construyeron: <em>PHP to shell</em>. El objetivo final
-          de la cadena es convertir una petición HTTP en una shell en el servidor. En este repositorio el proyecto se
-          llama <strong>php2bash</strong> por el mismo motivo: <em>PHP → bash</em>. Las CVE son la causa; «php2shell» es la herramienta/exploit.
+    <div class="grid g2" style="margin-top: 14px">
+      <div class="callout info" style="margin: 0">
+        <div class="glyph" aria-hidden="true">i</div>
+        <div>
+          <div class="title">Por qué se llama PHP2Shell / php2bash</div>
+          <div class="body">«PHP to shell»: es el nombre del exploit combinado que convierte una petición HTTP en una shell. Aquí el proyecto se llama <strong>php2bash</strong> por lo mismo.</div>
         </div>
       </div>
-    </div>
-
-    <div class="panel" style="padding: 26px; margin-top: 22px">
-      <span class="eyebrow" style="margin-bottom: 10px">El patrón, en código</span>
-      <h3 style="font-size: 1.2rem; margin-bottom: 6px">Publicar antes de terminar de construir</h3>
-      <p class="muted" style="font-size: 14px; max-width: 82ch">
-        El bug original está en el orden de operaciones de la tabla hash de PHP. El contador de elementos se incrementa
-        <em>antes</em> de que el bucket esté inicializado. Si la asignación de la clave falla por falta de memoria, el
-        fatal salta y el bucket queda a medias; pero el contador ya lo hace visible al destructor de la tabla.
-      </p>
-      <app-code label="php-src · versión simplificada con fines didácticos" [code]="pseudo" />
-      <p class="inline-note">
-        Reproducido de forma divulgativa a partir del análisis de Calif. No es código explotable: los detalles de
-        asignación, bytes y offsets se omiten a propósito.
-      </p>
-    </div>
-
-    <div class="grid g2" style="margin-top: 22px">
-      <div class="panel" style="padding: 26px">
-        <h3 style="font-size: 1.1rem; margin-bottom: 6px">Cómo se fuerza el fatal</h3>
-        <p class="muted" style="font-size: 14px">
-          Todo ocurre durante el <strong>arranque de la petición</strong>, antes de que se ejecute una sola línea de tu
-          aplicación. Por eso no hay nada que arreglar en el código de Laravel: el problema ya ha sucedido cuando
-          <span class="mono">public/index.php</span> empieza a correr.
-        </p>
-        <app-code label="forma del desencadenante (esquema)" [code]="trigger" />
-        <ul class="muted" style="font-size: 14px; margin-bottom: 0">
-          <li><span class="mono">post_max_size</span> se compara con el <em>Content-Length</em> declarado, no con los bytes reales consumidos.</li>
-          <li>Una parte con <span class="mono">filename=""</span> no cuenta para <span class="mono">max_file_uploads</span>, pero crea seis claves en <span class="mono">$_FILES</span>.</li>
-          <li>Nombres anidados (<span class="mono">files[a][b][c]…</span>) multiplican las asignaciones: cientos de registros ocupan más de 128 MiB sin superar 8 MiB de cuerpo.</li>
-        </ul>
-      </div>
-
-      <div class="panel" style="padding: 26px">
-        <h3 style="font-size: 1.1rem; margin-bottom: 6px">Por qué el SAPI importa tanto</h3>
-        <p class="muted" style="font-size: 14px">
-          El mismo fallo tiene distinto alcance según cómo se ejecute PHP. La diferencia clave es si el proceso
-          sobrevive al fatal.
-        </p>
-        <app-code label="mod_php vs php-fpm" [code]="fpm" />
-        <p class="muted" style="font-size: 14px; margin-bottom: 0">
-          De ahí la prioridad que da PHP: <strong><span class="mono">mod_php</span> es el escenario más grave</strong>,
-          porque permite el ataque con una sola petición y antes de que la aplicación exista. En PHP-FPM la ruta de
-          sesión se validó igualmente, y la de OOM es vulnerable por análisis.
-        </p>
-      </div>
-    </div>
-
-    <div class="grid g3" style="margin-top: 22px">
-      <div class="card">
-        <h3><span class="ico" aria-hidden="true">1</span>Ejecutar código</h3>
-        <p class="muted">
-          RCE como el usuario web (<span class="mono">www-data</span>, <span class="mono">nginx</span>,
-          <span class="mono">apache</span>). Desde ahí: leer <span class="mono">.env</span>, la base de datos, claves de
-          AWS o Stripe, escribir un webshell, moverte lateralmente.
-        </p>
-      </div>
-      <div class="card">
-        <h3><span class="ico" aria-hidden="true">2</span>Leer memoria</h3>
-        <p class="muted">
-          La variante de fuga devuelve memoria del worker dentro de una cookie <span class="mono">PHPSESSID</span>.
-          Puede contener contraseñas, tokens de sesión, claves de API y certificados TLS de <em>otras</em> peticiones.
-          Funciona incluso si la aplicación nunca llama a <span class="mono">session_start()</span>.
-        </p>
-      </div>
-      <div class="card">
-        <h3><span class="ico" aria-hidden="true">3</span>Denegar servicio</h3>
-        <p class="muted">
-          El propio disparador agota memoria y provoca caídas o reciclado de workers
-          (<span class="mono">SIGSEGV</span>). Sin llegar a RCE, ya es un impacto real sobre disponibilidad y coste.
-        </p>
-      </div>
-    </div>
-
-    <div class="callout warn">
-      <div class="glyph" aria-hidden="true">≈</div>
-      <div>
-        <div class="title">Matiz importante: no es un «gusanos tipo Log4Shell»</div>
-        <div class="body">
-          El vector CVSS es <span class="mono">AV:N/AC:H/AT:P/PR:N/UI:N/VC:H/VI:H/VA:H</span>: complejidad
-          <strong>alta</strong>. El ataque necesita conocer la configuración del objetivo y, a menudo, repetir intentos
-          para acertar con la disposición de memoria del worker. Varios PoC públicos no funcionan contra una instalación
-          PHP por defecto y algunos solo lo hacen tras añadir un <em>local file inclusion</em> al servidor de pruebas.
-          Eso reduce la probabilidad de explotación masiva indiscriminada, pero <strong>no reduce la gravedad</strong>
-          para un objetivo concreto y bien estudiado.
+      <div class="callout warn" style="margin: 0">
+        <div class="glyph" aria-hidden="true">≈</div>
+        <div>
+          <div class="title">No es un gusano tipo Log4Shell</div>
+          <div class="body">Complejidad alta (<span class="mono">AC:H</span>): hace falta conocer el objetivo y, a menudo, reintentar. Grave para un blanco concreto, poco útil para escanear Internet a ciegas.</div>
         </div>
       </div>
     </div>

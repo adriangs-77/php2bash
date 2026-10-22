@@ -6,23 +6,21 @@ Aplicación Angular 22 (SSR) que documenta el incidente **PHP2Shell** — `CVE-2
 > El nombre `php2bash` es el del proyecto: *PHP → bash*, el objetivo final del exploit.
 > En el ecosistema el incidente se conoce como **PHP2Shell**.
 
-## Contenido
+## Contenido (formato breve)
 
-1. **Resumen ejecutivo** — qué pasó, cuándo y qué hacer.
-2. **Origen y cronología** — por qué se descubrió (auditoría con IA, no una brecha), el precedente
-   de 2004, el bug de 2020, la auditoría de 2024, la filtración del 20/10 y la explotación desde el 17/10.
-3. **Anatomía del fallo** — modelo de worker, OOM, `longjmp`, *use-after-free* entre peticiones,
-   las dos CVE, la fuga de memoria vía `PHPSESSID` y por qué `mod_php` es el escenario más grave.
-4. **Versiones afectadas** — tabla por rama, SAPIs y **verificador interactivo** de versiones.
-5. **Soluciones** — parcheo por tipo de despliegue, reinicio de workers, mitigaciones temporales
-   (nginx, Apache, FPM, WAF) y qué *no* funciona.
-6. **Twintech (Angular + Laravel)** — ocho pasos verificables, comandos, script de triage de solo
-   lectura y **checklist interactiva** con progreso guardado en el navegador.
-7. **Detección** — señales en logs y procesos, comandos, matriz de decisión, respuesta a incidentes
-   y rotación de secretos en Laravel.
-8. **Contexto** — escala, el papel de la IA, respuesta del ecosistema, ruido/desinformación y lecciones.
-9. **FAQ** — doce dudas frecuentes.
-10. **Fuentes** — avisos oficiales y análisis técnicos.
+1. **Resumen** — qué pasó, a quién afecta y qué hacer.
+2. **Origen y cronología** — 2012 → agosto 2026 → 17–22 de octubre.
+3. **Anatomía del fallo** — OOM, estado obsoleto y las dos CVE.
+4. **Versiones** — tabla por rama + **verificador interactivo**.
+5. **Soluciones** — parcheo, reinicio y mitigaciones en pestañas.
+6. **Twintech (Angular + Laravel)** — seis pasos, comandos, script de triage y **checklist**.
+7. **Detección** — señales, comandos y matriz de decisión.
+8. **Contexto** — escala, IA y lecciones.
+9. **FAQ** — siete dudas rápidas.
+10. **Fuentes**.
+
+Cada sección usa un acento de color propio (menta, ámbar, coral, azul, lima, violeta) sobre una base
+verde-pizarra oscura o clara. Imágenes generadas en `public/images/` (hero, memoria, stack, detección).
 
 ## Desarrollo
 

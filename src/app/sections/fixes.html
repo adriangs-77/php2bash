@@ -1,196 +1,102 @@
-<section class="section" id="soluciones">
+<section class="section" id="soluciones" data-tone="lime">
   <div class="shell">
     <div class="section-head">
       <span class="eyebrow">Remediación</span>
       <h2><span class="num">05</span>¿Qué soluciones existen?</h2>
       <p class="lede">
-        Solo hay una solución completa: <strong>actualizar el binario de PHP y reiniciar los procesos que atienden
-        tráfico</strong>. Todo lo demás —bloquear multipart, desactivar el progreso de subida, límites, WAF— compra
-        tiempo y reduce rutas concretas, pero no elimina la vulnerabilidad. El propio equipo de PHP lo dice:
-        «no hay mitigaciones completas; actualizar es la única opción segura».
+        Una sola completa: <strong>actualizar PHP y reiniciar los procesos</strong>. Todo lo demás reduce rutas
+        concretas y compra tiempo, pero no elimina la vulnerabilidad.
       </p>
     </div>
 
     <div class="callout ok" style="margin-top: 0">
       <div class="glyph" aria-hidden="true">1</div>
       <div>
-        <div class="title">Orden de actuación</div>
-        <div class="body">
-          <strong>Parchear</strong> → <strong>reiniciar workers</strong> → <strong>verificar versión y proceso</strong> →
-          <strong>buscar explotación previa</strong> → <strong>rotar secretos</strong>. Si no puedes parchear en horas,
-          aplica mitigaciones temporales y reduce la exposición (restringe el acceso, aísla el servicio), pero no las
-          confundas con la solución.
-        </div>
+        <div class="title">Orden correcto</div>
+        <div class="body">Parchear → reiniciar workers → verificar versión y proceso → buscar explotación previa → rotar secretos.</div>
       </div>
     </div>
 
-    <h3 style="font-size: 1.2rem; margin: 28px 0 14px">Parchear según cómo despliegues PHP</h3>
-
-    <div class="grid g2">
-      <div class="card pad-lg">
-        <h3><span class="ico" aria-hidden="true">⌗</span>Distribución Linux</h3>
-        <p class="muted" style="font-size: 14px">
-          Las distribuciones recibieron el parche antes del anuncio. Actualiza paquetes, no solo el metapaquete
-          <span class="mono">php</span>: también <span class="mono">-fpm</span>, <span class="mono">-cli</span> y extensiones.
+    <div class="grid g3">
+      <div class="card">
+        <h3><span class="ico" aria-hidden="true">⌗</span>Paquetes del sistema</h3>
+        <p class="muted" style="font-size: 13.4px">
+          Actualiza también <span class="mono">-fpm</span>, <span class="mono">-cli</span> y extensiones. Luego
+          <span class="mono">systemctl restart</span>, no solo <span class="mono">reload</span>.
         </p>
         <app-code label="Debian / Ubuntu" [code]="debian" />
-        <app-code label="RHEL / AlmaLinux / Rocky" [code]="rhel" />
       </div>
 
-      <div class="card pad-lg">
-        <h3><span class="ico" aria-hidden="true">◫</span>Docker y plataformas gestionadas</h3>
-        <p class="muted" style="font-size: 14px">
-          Cambiar la etiqueta de la imagen no basta si no se reconstruye y se recrean los contenedores.
-          En Laravel Sail, el <span class="mono">Dockerfile</span> parte de una imagen <span class="mono">php:8.x-fpm</span>.
+      <div class="card">
+        <h3><span class="ico" aria-hidden="true">◫</span>Contenedores</h3>
+        <p class="muted" style="font-size: 13.4px">
+          Cambiar la etiqueta no basta: reconstruye y recrea. En Sail, el <span class="mono">Dockerfile</span> parte de
+          <span class="mono">php:8.x-fpm</span>.
         </p>
-        <app-code label="Dockerfile + compose" [code]="docker" />
-        <p class="muted" style="font-size: 14px; margin-bottom: 0">
-          <strong>Forge / Envoyer:</strong> actualiza la versión de PHP del servidor desde el panel o el sistema y
-          reinicia FPM. <strong>CloudLinux / cPanel:</strong> paquetes <span class="mono">ea-phpXX</span> desde el panel.
-          <strong>Plesk / DirectAdmin:</strong> actualiza el handler de PHP y revisa el changelog de la CVE.
-          Las imágenes oficiales <span class="mono">php</span> no reciben parche para 8.1 o anteriores.
+        <app-code label="Docker / Sail" [code]="docker" />
+      </div>
+
+      <div class="card">
+        <h3><span class="ico" aria-hidden="true">↻</span>Laravel en marcha</h3>
+        <p class="muted" style="font-size: 13.4px">
+          Octane, Horizon y colas tienen workers de larga vida: si cambió el binario, páralos y arráncalos.
         </p>
+        <app-code label="artisan" [code]="laravelRestart" />
       </div>
     </div>
 
-    <div class="panel" style="padding: 26px; margin-top: 18px">
-      <h3 style="font-size: 1.1rem; margin-bottom: 6px">Reiniciar es parte del parche</h3>
-      <p class="muted" style="font-size: 14px; max-width: 82ch">
-        Instalar el paquete no cambia el código que ya está en memoria. La ventana de exposición termina cuando los
-        procesos que atienden peticiones arrancan con el binario nuevo. Si no se reinicia FPM ni el padre de Apache,
-        sigues vulnerable aunque <span class="mono">php -v</span> muestre la versión corregida.
+    <div class="panel pad" style="margin-top: 14px">
+      <h3 style="font-size: 1.02rem; margin-bottom: 4px">Si no puedes parchear hoy: mitigaciones parciales</h3>
+      <p class="muted" style="font-size: 13.2px; margin-bottom: 14px">
+        Combinadas y con supervisión. <span class="mono">memory_limit=-1</span> quita la protección de memoria del host.
       </p>
-      <div class="grid g2">
-        <app-code label="reinicio de SAPIs" [code]="restart" />
-        <app-code label="Laravel: colas y Octane" [code]="laravelRestart" />
-      </div>
-    </div>
 
-    <h3 style="font-size: 1.2rem; margin: 32px 0 6px">Si no puedes parchear hoy: mitigaciones temporales</h3>
-    <p class="muted" style="font-size: 14px; max-width: 82ch; margin-bottom: 16px">
-      Cada una bloquea rutas concretas, no la vulnerabilidad. PHP advierte además que
-      <span class="mono">session.upload_progress.enabled=0</span> por sí solo no es suficiente y que
-      <span class="mono">memory_limit=-1</span> permite que una sola petición consuma toda la memoria del servidor.
-      Combínalas, monitoriza y retíralas al parchear.
-    </p>
-
-    <div class="panel" style="padding: 22px">
-      <div class="tabs" role="tablist" aria-label="Mitigaciones por componente">
-        <button
-          type="button"
-          class="tab"
-          role="tab"
-          id="tab-nginx"
-          [attr.aria-selected]="tab() === 'nginx'"
-          [attr.aria-controls]="'panel-nginx'"
-          (click)="set('nginx')"
-        >
-          nginx
-        </button>
-        <button
-          type="button"
-          class="tab"
-          role="tab"
-          id="tab-apache"
-          [attr.aria-selected]="tab() === 'apache'"
-          [attr.aria-controls]="'panel-apache'"
-          (click)="set('apache')"
-        >
-          Apache / mod_php
-        </button>
-        <button
-          type="button"
-          class="tab"
-          role="tab"
-          id="tab-fpm"
-          [attr.aria-selected]="tab() === 'fpm'"
-          [attr.aria-controls]="'panel-fpm'"
-          (click)="set('fpm')"
-        >
-          php.ini / FPM
-        </button>
-        <button
-          type="button"
-          class="tab"
-          role="tab"
-          id="tab-waf"
-          [attr.aria-selected]="tab() === 'waf'"
-          [attr.aria-controls]="'panel-waf'"
-          (click)="set('waf')"
-        >
-          WAF y borde
-        </button>
+      <div class="tabs" role="tablist" aria-label="Mitigaciones">
+        <button type="button" class="tab" role="tab" id="tab-nginx" [attr.aria-selected]="tab() === 'nginx'" aria-controls="panel-nginx" (click)="set('nginx')">nginx</button>
+        <button type="button" class="tab" role="tab" id="tab-apache" [attr.aria-selected]="tab() === 'apache'" aria-controls="panel-apache" (click)="set('apache')">Apache</button>
+        <button type="button" class="tab" role="tab" id="tab-fpm" [attr.aria-selected]="tab() === 'fpm'" aria-controls="panel-fpm" (click)="set('fpm')">php.ini / FPM</button>
+        <button type="button" class="tab" role="tab" id="tab-waf" [attr.aria-selected]="tab() === 'waf'" aria-controls="panel-waf" (click)="set('waf')">WAF</button>
       </div>
 
       @switch (tab()) {
         @case ('nginx') {
-          <div id="panel-nginx" role="tabpanel" aria-labelledby="tab-nginx">
-            <app-code label="nginx.conf · bloqueo de multipart" [code]="nginx" />
-          </div>
+          <div id="panel-nginx" role="tabpanel" aria-labelledby="tab-nginx"><app-code label="nginx" [code]="nginx" /></div>
         }
         @case ('apache') {
-          <div id="panel-apache" role="tabpanel" aria-labelledby="tab-apache">
-            <app-code label="httpd.conf / .htaccess" [code]="apache" />
-          </div>
+          <div id="panel-apache" role="tabpanel" aria-labelledby="tab-apache"><app-code label="Apache" [code]="apache" /></div>
         }
         @case ('fpm') {
-          <div id="panel-fpm" role="tabpanel" aria-labelledby="tab-fpm">
-            <app-code label="pool de PHP-FPM" [code]="fpm" />
-          </div>
+          <div id="panel-fpm" role="tabpanel" aria-labelledby="tab-fpm"><app-code label="pool de FPM" [code]="fpm" /></div>
         }
         @case ('waf') {
-          <div id="panel-waf" role="tabpanel" aria-labelledby="tab-waf">
-            <app-code label="borde / CDN" [code]="waf" />
-          </div>
+          <div id="panel-waf" role="tabpanel" aria-labelledby="tab-waf"><app-code label="borde" [code]="waf" /></div>
         }
       }
 
-      <div class="callout warn" style="margin-bottom: 0">
-        <div class="glyph" aria-hidden="true">!</div>
-        <div>
-          <div class="title">Efectos secundarios que debes probar</div>
-          <div class="body">
-            Bloquear <span class="mono">multipart/form-data</span> rompe subidas de archivos, importaciones CSV,
-            avatares y algunos formularios de checkout. <span class="mono">memory_limit=-1</span> elimina la protección
-            de memoria y aumenta el riesgo de agotamiento real del host. Usa cgroups/contenedores como límite de
-            disponibilidad, sin recurrir a <span class="mono">RLIMIT_AS</span> o <span class="mono">RLIMIT_DATA</span>
-            (pueden provocar justamente el fallo de asignación explotable).
-          </div>
-        </div>
+      <p class="inline-note" style="margin-bottom: 0">
+        Bloquear multipart rompe subidas e importaciones. Si estás detrás de un CDN, comprueba que el origen no sea
+        accesible por otro subdominio.
+      </p>
+    </div>
+
+    <div class="grid g2" style="margin-top: 14px">
+      <div class="panel pad">
+        <h3 style="font-size: 1rem; margin-bottom: 6px">Ramas sin soporte</h3>
+        <p class="muted" style="font-size: 13.2px; margin-bottom: 0">
+          <strong>8.1 / 8.0 / 7.4:</strong> paquete con backport (Sury, Ubuntu Pro, Freexian, AlmaLinux, CloudLinux,
+          TuxCare, ZendPHP) o compilar desde las ramas <span class="mono">PHP-x.y-CVE-2026-109618-109619</span>.
+          <strong>7.3 y anteriores:</strong> no hay parche oficial; migrar o aislar.
+        </p>
       </div>
-    </div>
 
-    <h3 style="font-size: 1.2rem; margin: 32px 0 14px">Ramas sin soporte: backports y proveedores</h3>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr><th scope="col">Origen</th><th scope="col">Ramas cubiertas</th><th scope="col">Nota</th></tr>
-        </thead>
-        <tbody>
-          <tr><td class="hl">Paquetes de distribución</td><td class="mono">8.2–8.5</td><td>El número de versión puede no cambiar; verifica el changelog.</td></tr>
-          <tr><td class="hl">deb.sury.org / PPA de Ondřej Surý</td><td class="mono">5.6 · 7.4 · 8.0 · 8.1</td><td>Gratuito. Usado por Laravel Forge.</td></tr>
-          <tr><td class="hl">Ubuntu Pro / Freexian ELTS</td><td class="mono">7.0–8.1 según release</td><td>Ubuntu Pro incluye 22.04 (8.1); Freexian es de pago.</td></tr>
-          <tr><td class="hl">Remi's RPM repository</td><td class="mono">7.4 · 8.0 · 8.1</td><td>PHP.net advirtió que el día del anuncio aún no tenía actualizaciones: comprueba antes de confiar.</td></tr>
-          <tr><td class="hl">AlmaLinux / CloudLinux</td><td class="mono">Todos sus streams</td><td>Paquetes propios, incluidos <span class="mono">ea-phpXX</span>.</td></tr>
-          <tr><td class="hl">TuxCare ELS · ZendPHP LTS</td><td class="mono">5.x–8.1</td><td>Comerciales; despliegue por ramas.</td></tr>
-          <tr><td class="hl">php-src (código fuente)</td><td class="mono">7.4 · 8.0 · 8.1</td><td>Ramas <span class="mono">PHP-x.y-CVE-2026-109618-109619</span> del equipo de seguridad.</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="callout danger">
-      <div class="glyph" aria-hidden="true">✕</div>
-      <div>
-        <div class="title">Lo que no sirve (aunque sea popular)</div>
-        <div class="body">
-          <ul style="margin: 0; padding-left: 1.1rem">
-            <li><strong>Actualizar Laravel o Angular.</strong> El fallo está en el intérprete; ningún framework lo corrige.</li>
-            <li><strong>Ocultar errores</strong> con <span class="mono">display_errors=0</span>, <span class="mono">error_reporting</span> o <span class="mono">@</span>. El fatal ocurre igual.</li>
-            <li><strong>Configurar por petición</strong> con <span class="mono">ini_set()</span> o <span class="mono">.user.ini</span>: se aplica demasiado tarde.</li>
-            <li><strong>Confiar solo en el WAF.</strong> Reduce ruido, pero han aparecido intentos de evasión y el tráfico llega antes de tu código.</li>
-            <li><strong>Desconectar la web después de la filtración</strong> sin revisar lo anterior: no borra lo que ya pasó.</li>
-          </ul>
-        </div>
+      <div class="panel pad">
+        <h3 style="font-size: 1rem; margin-bottom: 6px">Lo que no sirve</h3>
+        <ul class="muted" style="font-size: 13.2px; margin-bottom: 0">
+          <li>Actualizar Laravel, Angular o el CMS.</li>
+          <li>Ocultar errores con <span class="mono">display_errors</span> o <span class="mono">@</span>.</li>
+          <li>Configurar con <span class="mono">ini_set()</span> o <span class="mono">.user.ini</span>: llega tarde.</li>
+          <li>Confiar solo en el WAF.</li>
+        </ul>
       </div>
     </div>
   </div>

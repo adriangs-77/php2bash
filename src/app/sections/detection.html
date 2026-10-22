@@ -1,200 +1,78 @@
-<section class="section" id="deteccion">
+<section class="section" id="deteccion" data-tone="amber">
   <div class="shell">
     <div class="section-head">
-      <span class="eyebrow">Detección y respuesta</span>
-      <h2><span class="num">07</span>¿Hay forma de saber si alguien lo ha aprovechado?</h2>
+      <span class="eyebrow">Detección</span>
+      <h2><span class="num">07</span>¿Han aprovechado la vulnerabilidad?</h2>
       <p class="lede">
-        Sí, pero con límites importantes. Un <strong>RCE</strong> suele dejar rastro en logs y procesos. La
-        <strong>fuga de memoria</strong>, en cambio, puede no dejar ninguno: la información sale dentro de una cookie de
-        respuesta y el servidor no registra nada anómalo. Por eso, ante la duda, hay que asumir exposición y rotar secretos.
+        Un RCE deja rastro en logs y procesos. La <strong>fuga de memoria</strong>, no: sale en una cookie de respuesta
+        y el servidor no registra nada anómalo. Tu <span class="mono">laravel.log</span> no verá ninguno de los dos.
       </p>
     </div>
 
-    <div class="callout warn" style="margin-top: 0">
-      <div class="glyph" aria-hidden="true">!</div>
+    <div class="split">
       <div>
-        <div class="title">Tu <span class="mono">laravel.log</span> no va a contarte esto</div>
-        <div class="body">
-          El fallo se ejecuta en el intérprete, por debajo de la aplicación y, en muchos casos, antes de que empiece.
-          Los plugins de actividad, el log de Laravel o Sentry pueden estar completamente limpios y aun así haber habido
-          explotación. La investigación se hace en <strong>logs del servidor web, del SAPI, del sistema operativo y en
-          telemetría de procesos</strong>, no en el log de la app.
-        </div>
-      </div>
-    </div>
-
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr><th scope="col">Fuente</th><th scope="col">Qué aporta</th><th scope="col">Fiabilidad</th></tr>
-        </thead>
-        <tbody>
-          <tr><td class="hl">Log de errores de PHP / FPM</td><td>Fatales por OOM, mensajes «in Unknown on line 0», workers muertos por señal.</td><td><span class="pill ok">Alta</span></td></tr>
-          <tr><td class="hl">Access log de nginx/Apache</td><td>POST masivos, ráfagas de 500/502, IPs repetidoras. <strong>No</strong> guarda Content-Type por defecto.</td><td><span class="pill warn">Media</span></td></tr>
-          <tr><td class="hl">journalctl / kern.log</td><td>Segfaults y reinicios del servicio, OOM killer.</td><td><span class="pill ok">Alta</span></td></tr>
-          <tr><td class="hl">WAF / CDN / balanceador</td><td>Cuerpo y cabeceras (incluido <span class="mono">Set-Cookie</span>) si están configurados para registrarlos.</td><td><span class="pill ok">Alta</span></td></tr>
-          <tr><td class="hl">EDR / auditoría de procesos</td><td>Shells o descargadores hijos de <span class="mono">php-fpm</span> o <span class="mono">apache</span>.</td><td><span class="pill ok">Muy alta</span></td></tr>
-          <tr><td class="hl">Laravel / aplicación</td><td>Cambios de configuración, usuarios creados, acciones autenticadas tras el compromiso.</td><td><span class="pill bad">Baja para el fallo</span></td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="grid g3" style="margin-top: 20px">
-      <div class="card">
-        <h3><span class="ico" aria-hidden="true">1</span>Capa HTTP</h3>
-        <p class="muted" style="font-size: 13.5px">
-          <span class="mono">multipart/form-data</span> hacia rutas que nunca reciben subidas; peticiones con
-          <em>chunked</em> o sin <em>Content-Length</em> utilizable; campos anidados muy profundos; cientos de partes;
-          ráfagas de 500 seguidas de una petición «limpia» desde la misma IP.
-        </p>
-      </div>
-      <div class="card">
-        <h3><span class="ico" aria-hidden="true">2</span>Capa PHP</h3>
-        <p class="muted" style="font-size: 13.5px">
-          Clústeres de <span class="mono">Allowed memory size of N bytes exhausted</span>, a menudo con
-          <span class="mono">in Unknown on line 0</span>; <span class="mono">Maximum execution time … exceeded</span>;
-          <span class="mono">Failed to decode session object</span>; workers que mueren por señal 6 u 11 y se reciclan.
-        </p>
-      </div>
-      <div class="card">
-        <h3><span class="ico" aria-hidden="true">3</span>Capa de proceso</h3>
-        <p class="muted" style="font-size: 13.5px">
-          <span class="mono">sh</span>, <span class="mono">bash</span>, <span class="mono">curl</span>,
-          <span class="mono">wget</span>, <span class="mono">python</span> o <span class="mono">nc</span> como hijos de
-          un worker de PHP; conexiones salientes inesperadas; archivos nuevos en <span class="mono">public/</span>,
-          <span class="mono">storage/</span> o <span class="mono">/tmp</span>; tareas cron o claves SSH nuevas.
-        </p>
-      </div>
-    </div>
-
-    <div class="panel" style="padding: 24px; margin-top: 20px">
-      <h3 style="font-size: 1.05rem; margin-bottom: 6px">Comandos de búsqueda</h3>
-      <p class="muted" style="font-size: 14px">
-        Ejecútalos desde el 17/10/2026 como mínimo. Si el sistema estuvo expuesto y tienes retención, amplía hasta el
-        1 de agosto (cuando comenzó la investigación, por si hubo filtraciones previas). Guarda la salida antes de que
-        roten los logs.
-      </p>
-      <app-code label="triaje · logs" [code]="hunt" />
-    </div>
-
-    <h3 style="font-size: 1.2rem; margin: 30px 0 14px">Matriz de decisión</h3>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr><th scope="col">Lo que ves</th><th scope="col">Interpretación</th><th scope="col">Qué hacer</th></tr>
-        </thead>
-        <tbody>
-          <tr class="row-warn">
-            <td>Solo POST grandes o escaneos en el access log</td>
-            <td>Reconocimiento o sondeo. No prueba explotación.</td>
-            <td>Bloquear IP, revisar WAF, seguir vigilando.</td>
-          </tr>
-          <tr class="row-warn">
-            <td>Multipart anómalo + fatal por OOM</td>
-            <td>Intento «armado»: el disparador funcionó.</td>
-            <td>Localizar el worker afectado y buscar el segundo paso en las horas siguientes.</td>
-          </tr>
-          <tr class="row-warn">
-            <td>Worker muerto por SIGSEGV o 502 tras el intento</td>
-            <td>El intento falló o el proceso se reinició. Es probable que haya reintentos.</td>
-            <td>Correlacionar por IP y ventana temporal; mantener la vigilancia.</td>
-          </tr>
-          <tr class="row-bad">
-            <td>Proceso hijo del worker: shell, <span class="mono">curl</span>, webshell</td>
-            <td><strong>RCE confirmado.</strong> Es la evidencia más directa.</td>
-            <td>Respuesta a incidentes completa: aislar, preservar, reconstruir, rotar.</td>
-          </tr>
-          <tr class="row-bad">
-            <td>Cookie <span class="mono">PHPSESSID</span> anormalmente grande o malformada</td>
-            <td>Posible fuga de memoria (contenido del heap codificado en la cookie).</td>
-            <td>Asumir fuga de credenciales: rotar secretos y cerrar sesiones.</td>
-          </tr>
-          <tr class="row-ok">
-            <td>Nada, con cobertura completa de logs</td>
-            <td>No hay evidencia de RCE. No demuestra que no hubiera fuga de memoria.</td>
-            <td>Parchear, reiniciar, rotar sesiones y secretos de mayor valor, monitorizar.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="grid g2" style="margin-top: 20px">
-      <div class="panel" style="padding: 24px">
-        <h3 style="font-size: 1.05rem; margin-bottom: 6px">En el host: persistencia y artefactos</h3>
-        <p class="muted" style="font-size: 14px">
-          Si hubo ejecución de código, el atacante pudo escribir un webshell, crear un usuario, añadir una clave SSH o
-          dejar una tarea programada. Estos comandos cubren lo básico.
-        </p>
-        <app-code label="triaje · sistema de archivos y procesos" [code]="host" />
-      </div>
-
-      <div class="panel" style="padding: 24px">
-        <h3 style="font-size: 1.05rem; margin-bottom: 6px">Plan de respuesta, en orden</h3>
-        <div class="flow">
-          <div class="flow-step danger">
-            <div><div class="ft">Preservar</div><div class="fd">Copia logs, configuración y, si es posible, una instantánea del disco antes de tocar nada. Anota la hora de arranque de los procesos.</div></div>
+        <div class="grid g3" style="margin-bottom: 12px">
+          <div class="card">
+            <h3 style="font-size: 0.95rem"><span class="ico" aria-hidden="true">1</span>HTTP</h3>
+            <p class="muted" style="font-size: 12.8px; margin-bottom: 0">Multipart a rutas sin subidas, chunked sin longitud, ráfagas de 500 desde una IP.</p>
           </div>
-          <div class="flow-step danger">
-            <div><div class="ft">Contener</div><div class="fd">Aísla el host del tráfico público; no lo apagues si necesitas memoria o disco. Revoca credenciales de despliegue.</div></div>
+          <div class="card">
+            <h3 style="font-size: 0.95rem"><span class="ico" aria-hidden="true">2</span>PHP</h3>
+            <p class="muted" style="font-size: 12.8px; margin-bottom: 0">OOM fatales, <span class="mono">in Unknown on line 0</span>, SIGSEGV, sesiones ilegibles.</p>
           </div>
-          <div class="flow-step">
-            <div><div class="ft">Reconstruir</div><div class="fd">Crea un servidor nuevo desde una imagen parcheada y despliega la app desde el repositorio, no desde el host comprometido.</div></div>
-          </div>
-          <div class="flow-step">
-            <div><div class="ft">Rotar</div><div class="fd">Todas las credenciales que el usuario web pudiera leer: base de datos, Redis, correo, pagos, cloud, tokens de CI, claves SSH.</div></div>
-          </div>
-          <div class="flow-step">
-            <div><div class="ft">Investigar</div><div class="fd">Revisa usuarios creados, pedidos o pagos manipulados, datos exportados y accesos laterales a otros sistemas.</div></div>
-          </div>
-          <div class="flow-step">
-            <div><div class="ft">Notificar</div><div class="fd">Si hay datos personales afectados, valora la notificación a la autoridad de protección de datos (72 h en la UE) y a los afectados. Revisa obligaciones NIS2/DORA si aplican.</div></div>
+          <div class="card">
+            <h3 style="font-size: 0.95rem"><span class="ico" aria-hidden="true">3</span>Proceso</h3>
+            <p class="muted" style="font-size: 12.8px; margin-bottom: 0">Shells o <span class="mono">curl</span> hijos de <span class="mono">php-fpm</span>, archivos nuevos, cron o claves SSH.</p>
           </div>
         </div>
-      </div>
-    </div>
 
-    <div class="callout danger">
-      <div class="glyph" aria-hidden="true">✕</div>
-      <div>
-        <div class="title">La fuga de memoria es invisible, y por eso hay que rotar igual</div>
-        <div class="body">
-          La variante de divulgación devuelve memoria del worker al cliente dentro de una cookie. En el servidor no hay
-          error, no hay crash y no hay petición «rara» que llame la atención: el ataque es una petición multipart normal.
-          Si Twinteach estuvo en una versión vulnerable y accesible desde Internet, <strong>no puedes demostrar
-          criptográficamente que no se filtró nada</strong>. La decisión prudente es rotar credenciales y cerrar sesiones.
+        <div class="panel pad">
+          <h3 style="font-size: 1rem; margin-bottom: 2px">Búsqueda en logs</h3>
+          <p class="muted" style="font-size: 13.2px">Empieza el 17/10/2026 y guarda la salida antes de que roten los logs.</p>
+          <app-code label="triaje · logs" [code]="hunt" />
         </div>
-      </div>
-    </div>
 
-    <div class="panel" style="padding: 24px; margin-top: 20px">
-      <h3 style="font-size: 1.05rem; margin-bottom: 6px">Rotación de secretos en Laravel</h3>
-      <p class="muted" style="font-size: 14px">
-        Hazlo desde un entorno limpio y en este orden: primero revocar, después emitir credenciales nuevas, y por último
-        redesplegar. Si sospechas RCE, asume que el atacante conoce la estructura de tu <span class="mono">.env</span>.
-      </p>
-      <app-code label="checklist de rotación" [code]="rotate" />
-      <div class="callout warn" style="margin-bottom: 0">
-        <div class="glyph" aria-hidden="true">!</div>
-        <div>
-          <div class="body">
-            <strong>Ojo con <span class="mono">APP_KEY</span>:</strong> cambiarla invalida sesiones y cookies, pero también
-            hace ilegibles los datos cifrados con la clave anterior (columnas <span class="mono">encrypted</span>, algunos
-            tokens). Planifica el re-cifrado o mantén la clave y rota el resto. Lo que nunca debe quedarse es una
-            contraseña de base de datos o una clave de API que estuviera en el <span class="mono">.env</span> del host expuesto.
+        <figure class="figure" style="margin-top: 12px">
+          <img
+            src="images/detection.jpg"
+            alt="Láminas translúcidas apiladas que representan líneas de registro, con una resaltada en ámbar y un rombo rojo"
+            width="1376"
+            height="768"
+            loading="lazy"
+          />
+          <figcaption>Una anomalía aislada no prueba nada: hay que correlacionar por IP y ventana temporal.</figcaption>
+        </figure>
+      </div>
+
+      <div style="display: grid; gap: 12px">
+        <div class="panel pad">
+          <h3 style="font-size: 1rem; margin-bottom: 8px">Matriz de decisión</h3>
+          <ul class="muted" style="font-size: 13.2px; margin-bottom: 0">
+            <li><strong>Solo sondeos:</strong> bloquear y vigilar.</li>
+            <li><strong>Multipart + OOM fatal:</strong> intento armado; busca el segundo paso.</li>
+            <li><strong>Worker por SIGSEGV:</strong> falló o se reinició; habrá reintentos.</li>
+            <li><strong>Shell hija del worker:</strong> RCE confirmado → respuesta a incidentes.</li>
+            <li><strong>Cookie PHPSESSID anómala:</strong> posible fuga → rotar todo.</li>
+            <li><strong>Nada con logs completos:</strong> no prueba que no hubo fuga.</li>
+          </ul>
+        </div>
+
+        <div class="panel pad">
+          <h3 style="font-size: 1rem; margin-bottom: 8px">Si hay un hallazgo</h3>
+          <div class="flow" style="margin: 0">
+            <div class="flow-step danger"><div><div class="ft">Preservar</div><div class="fd">Logs, configuración e instantánea antes de tocar nada.</div></div></div>
+            <div class="flow-step danger"><div><div class="ft">Contener</div><div class="fd">Aislar del tráfico y revocar credenciales de despliegue.</div></div></div>
+            <div class="flow-step"><div><div class="ft">Reconstruir</div><div class="fd">Servidor nuevo parcheado, despliegue desde el repositorio.</div></div></div>
+            <div class="flow-step"><div><div class="ft">Rotar y notificar</div><div class="fd">Secretos, sesiones y, si hay datos personales, RGPD (72 h).</div></div></div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <div class="callout info">
-      <div class="glyph" aria-hidden="true">i</div>
-      <div>
-        <div class="title">No estás solo: fuentes oficiales de indicadores</div>
-        <div class="body">
-          CISA publicó una alerta el 21/10/2026 pidiendo parchear de inmediato; CERT-EU emitió el aviso 2026-018;
-          Cloudflare, AWS, Fastly, Imperva y Vercel publicaron reglas y guías; Microsoft, Google y los proveedores EDR
-          han ido añadiendo detecciones. Si operas en la UE, revisa también las guías de tu CSIRT nacional.
-          Si no tienes equipo forense, contacta con uno antes de reconstruir: la evidencia se pierde rápido.
+        <div class="callout danger" style="margin: 0">
+          <div class="glyph" aria-hidden="true">!</div>
+          <div>
+            <div class="title">La fuga es invisible</div>
+            <div class="body">Si estuviste expuesto, no puedes demostrar que no se filtró nada: rota igualmente.</div>
+          </div>
         </div>
       </div>
     </div>
