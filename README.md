@@ -19,6 +19,10 @@ Aplicación Angular 22 (SSR) que documenta el incidente **PHP2Shell** — `CVE-2
 9. **FAQ** — siete dudas rápidas.
 10. **Fuentes**.
 
+Estética de terminal: scanlines y grano muy tenues sobre el fondo, hero a dos columnas con una sesión
+de `bash` de ejemplo, luces de ventana en los bloques de código, etiquetas de sección `[01]`, reloj UTC
+en la barra superior y atajos `t` / `c` / `Esc` indicados en el pie.
+
 Cada sección usa un acento de color propio (menta, ámbar, coral, azul, lima, violeta) sobre una base
 verde-pizarra oscura o clara. Sin imágenes: el peso visual lo llevan la tipografía, los degradados y el color.
 

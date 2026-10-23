@@ -5,24 +5,47 @@
       CRÍTICO · Parche 21/10/2026 · Explotación en curso
     </div>
 
-    <h1><span class="stroke">PHP</span> <span class="accent">→ bash</span></h1>
+    <div class="hero-grid">
+      <div>
+        <h1><span class="stroke">PHP</span> <span class="accent">→ bash</span></h1>
 
-    <p class="hero-sub">
-      Dossier de <strong>PHP2Shell</strong> (<span class="mono">CVE-2026-109618</span> y
-      <span class="mono">CVE-2026-109619</span>): dos fallos de memoria en el núcleo de PHP que permiten
-      ejecutar código en el servidor <strong>sin credenciales</strong>. No es un fallo de Laravel ni de Angular.
-    </p>
+        <p class="hero-sub">
+          Dossier de <strong>PHP2Shell</strong> (<span class="mono">CVE-2026-109618</span> y
+          <span class="mono">CVE-2026-109619</span>): dos fallos de memoria en el núcleo de PHP que permiten
+          ejecutar código en el servidor <strong>sin credenciales</strong>. No es un fallo de Laravel ni de Angular.
+        </p>
 
-    <div class="hero-meta">
-      <span>ACTUALIZADO <b>22 OCT 2026</b></span>
-      <span>LECTURA <b>~5 min</b></span>
-      <span>ÁMBITO <b>PHP 5.4 → 8.5.11</b></span>
-    </div>
+        <div class="hero-meta">
+          <span>ACTUALIZADO <b>22 OCT 2026</b></span>
+          <span>LECTURA <b>~5 min</b></span>
+          <span>ÁMBITO <b>PHP 5.4 → 8.5.11</b></span>
+        </div>
 
-    <div class="hero-actions">
-      <a class="btn btn-primary" href="#resumen">Resumen rápido <span aria-hidden="true">→</span></a>
-      <a class="btn btn-ghost" href="#twintech">Twintech (Angular + Laravel)</a>
-      <a class="btn btn-ghost" href="#versiones">Comprobar versión</a>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#resumen">Resumen rápido <span aria-hidden="true">→</span></a>
+          <a class="btn btn-ghost" href="#twintech">Twintech (Angular + Laravel)</a>
+          <a class="btn btn-ghost" href="#versiones">Comprobar versión</a>
+        </div>
+      </div>
+
+      <figure class="term">
+        <div class="term-bar">
+          <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="file">triage.sh — bash</span>
+          <span class="tags" aria-hidden="true"><span>www-data</span></span>
+        </div>
+        <div class="term-body">
+          <div class="line"><span class="p">$</span> <span class="cmd">php -v | head -1</span></div>
+          <div class="line out">PHP 8.3.35 (cli) (built: Oct 20 2026)</div>
+          <div class="line"><span class="p">$</span> <span class="cmd">./cve-check.sh --php 8.3.35</span></div>
+          <div class="line fail">[FAIL] CVE-2026-109618 · afectado</div>
+          <div class="line hint">[HINT] 8.3.35 &lt; 8.3.36 → actualizar</div>
+          <div class="line"><span class="p">$</span> <span class="cmd">systemctl restart php8.3-fpm</span></div>
+          <div class="line ok">[ OK ] workers reiniciados</div>
+          <div class="line"><span class="p">$</span> <span class="caret" aria-hidden="true"></span></div>
+        </div>
+        <figcaption class="term-caption">Ejemplo de triage: detectar y cerrar la ventana de explotación.</figcaption>
+      </figure>
     </div>
 
     <div class="stats" role="list" aria-label="Cifras clave">

@@ -15,6 +15,10 @@
       }
     </nav>
 
+    <span class="utc" title="Hora UTC actual. El incidente se cronologiza en UTC.">
+      UTC <b>{{ clock() }}</b>
+    </span>
+
     <div class="cvd">
       <button
         type="button"
@@ -113,6 +117,15 @@
       <p class="disclaimer" style="margin-top: 10px">
         Si detectas un compromiso, preserva la evidencia antes de reinstalar y contacta con tu CSIRT o con INCIBE-CERT.
       </p>
+      <p class="footer-build">
+        <span aria-hidden="true">/*</span> dossier v1.0 · build 22 oct 2026 · SSR · sin cookies ni analítica
+        <span aria-hidden="true">*/</span>
+      </p>
+      <div class="footer-keys">
+        <span><kbd class="kbd">t</kbd> tema claro / oscuro</span>
+        <span><kbd class="kbd">c</kbd> paletas accesibles</span>
+        <span><kbd class="kbd">esc</kbd> cerrar menú</span>
+      </div>
     </div>
     <a class="to-top" href="#inicio">↑ Volver al inicio</a>
   </div>

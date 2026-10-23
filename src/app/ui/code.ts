@@ -6,6 +6,7 @@ import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core
   template: `
     <div class="code-wrap" [class.wrap]="wrap()">
       <div class="code-head">
+        <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
         <span class="label">{{ label() }}</span>
         <button
           type="button"
