@@ -19,6 +19,10 @@ Aplicación Angular 22 (SSR) que documenta el incidente **PHP2Shell** — `CVE-2
 9. **FAQ** — siete dudas rápidas.
 10. **Fuentes**.
 
+Estética de terminal: scanlines y grano muy tenues sobre el fondo, hero a dos columnas con una sesión
+de `bash` de ejemplo, luces de ventana en los bloques de código, etiquetas de sección `[01]`, reloj UTC
+en la barra superior y atajos `t` / `c` / `Esc` indicados en el pie.
+
 Cada sección usa un acento de color propio (menta, ámbar, coral, azul, lima, violeta) sobre una base
 verde-pizarra oscura o clara. Sin imágenes: el peso visual lo llevan la tipografía, los degradados y el color.
 
@@ -34,8 +38,13 @@ npm run serve:ssr:php2bash   # sirve el build SSR en :4000
 ## Notas técnicas
 
 - Angular standalone + signals, control de flujo `@if`/`@for`/`@switch`, sin Zone.js.
-- SSR con hidratación; la interactividad (tema, scroll-spy, checklist, portapapeles) se inicializa
-  en `afterNextRender` para no romper la hidratación.
+- SSR con hidratación; la interactividad (tema, paleta accesible, scroll-spy, checklist, portapapeles)
+  se inicializa en `afterNextRender` para no romper la hidratación.
+- **Paletas para daltonismo** en la barra superior: color original, deuteranopía, protanopía,
+  tritanopía y monocromo. Redefinen solo los seis acentos (`--h-*`) siguiendo las recomendaciones de
+  Okabe–Ito y Paul Tol; se combinan con el tema claro/oscuro y se guardan en
+  `localStorage['php2bash-cvd']`. Los estados críticos mantienen además icono y texto, de modo que
+  nunca dependen únicamente del color.
 - `allowedHosts: ["*"]` en `angular.json` está pensado para el entorno de preview; **restríngelo**
   a tus dominios reales antes de desplegar en producción.
 - Sin dependencias de terceros más allá de Angular y Express.

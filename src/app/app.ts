@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
+  computed,
   inject,
   signal,
 } from '@angular/core';
@@ -21,6 +22,17 @@ interface NavItem {
   id: string;
   label: string;
 }
+
+type CvdMode = 'default' | 'deuteranopia' | 'protanopia' | 'tritanopia' | 'mono';
+
+interface CvdOption {
+  id: CvdMode;
+  label: string;
+  hint: string;
+}
+
+const CVD_STORAGE_KEY = 'php2bash-cvd';
+const CVD_MODES: CvdMode[] = ['default', 'deuteranopia', 'protanopia', 'tritanopia', 'mono'];
 
 @Component({
   selector: 'app-root',
@@ -46,12 +58,32 @@ export class App {
   protected readonly progress = signal(0);
   protected readonly theme = signal<'dark' | 'light'>('dark');
 
+  /** Paleta para daltonismo: por defecto, o una de las cuatro paletas accesibles. */
+  protected readonly cvdOptions: CvdOption[] = [
+    { id: 'default', label: 'Color original', hint: 'Paleta del dossier, sin ajustes' },
+    { id: 'deuteranopia', label: 'Deuteranopía', hint: 'Verde y rojo se confunden: uso azul, violeta y ámbar' },
+    { id: 'protanopia', label: 'Protanopía', hint: 'El rojo se ve oscuro: refuerzo de luminosidad' },
+    { id: 'tritanopia', label: 'Tritanopía', hint: 'Azul y amarillo se confunden: verdes y magentas' },
+    { id: 'mono', label: 'Monocromo', hint: 'Sin color, jerarquía por luminosidad' },
+  ];
+  protected readonly cvd = signal<CvdMode>('default');
+  /** Reloj UTC vivo: refuerza la cronología del incidente. */
+  protected readonly clock = signal('--:--:--');
+  protected readonly cvdMenuOpen = signal(false);
+  protected readonly cvdActiveLabel = computed(
+    () => this.cvdOptions.find((o) => o.id === this.cvd())?.label ?? 'Color original',
+  );
+
   private readonly destroyRef = inject(DestroyRef);
 
   constructor() {
     afterNextRender(() => {
       this.initTheme();
+      this.initCvd();
       this.initScroll();
+      this.initMenuDismiss();
+      this.initClock();
+      this.initShortcuts();
     });
   }
 
@@ -64,6 +96,97 @@ export class App {
     } catch {
       /* almacenamiento no disponible */
     }
+  }
+
+  protected toggleCvdMenu(): void {
+    this.cvdMenuOpen.update((open) => !open);
+  }
+
+  protected selectCvd(mode: CvdMode): void {
+    this.cvd.set(mode);
+    this.cvdMenuOpen.set(false);
+    this.applyCvd(mode);
+    try {
+      localStorage.setItem(CVD_STORAGE_KEY, mode);
+    } catch {
+      /* almacenamiento no disponible */
+    }
+  }
+
+  private initCvd(): void {
+    let stored: string | null = null;
+    try {
+      stored = localStorage.getItem(CVD_STORAGE_KEY);
+    } catch {
+      stored = null;
+    }
+    const mode = CVD_MODES.includes(stored as CvdMode) ? (stored as CvdMode) : 'default';
+    this.cvd.set(mode);
+    this.applyCvd(mode);
+  }
+
+  private applyCvd(mode: CvdMode): void {
+    if (mode === 'default') {
+      document.documentElement.removeAttribute('data-cvd');
+    } else {
+      document.documentElement.setAttribute('data-cvd', mode);
+    }
+  }
+
+  private initClock(): void {
+    const tick = () => {
+      const now = new Date();
+      this.clock.set(now.toISOString().slice(11, 19));
+    };
+    tick();
+    const id = window.setInterval(tick, 1000);
+    this.destroyRef.onDestroy(() => window.clearInterval(id));
+  }
+
+  /** Atajos: t = tema, c = menú de paletas, esc = cerrar menú. */
+  private initShortcuts(): void {
+    const onKeydown = (event: KeyboardEvent) => {
+      if (event.metaKey || event.ctrlKey || event.altKey || event.repeat) {
+        return;
+      }
+      const target = event.target as HTMLElement | null;
+      if (
+        target?.isContentEditable ||
+        ['INPUT', 'TEXTAREA', 'SELECT'].includes(target?.tagName ?? '')
+      ) {
+        return;
+      }
+      const key = event.key.toLowerCase();
+      if (key === 't') {
+        event.preventDefault();
+        this.toggleTheme();
+      } else if (key === 'c') {
+        event.preventDefault();
+        this.toggleCvdMenu();
+      }
+    };
+    document.addEventListener('keydown', onKeydown);
+    this.destroyRef.onDestroy(() => document.removeEventListener('keydown', onKeydown));
+  }
+
+  private initMenuDismiss(): void {
+    const onPointerDown = (event: Event) => {
+      const target = event.target as HTMLElement | null;
+      if (!target?.closest('.cvd')) {
+        this.cvdMenuOpen.set(false);
+      }
+    };
+    const onKeydown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        this.cvdMenuOpen.set(false);
+      }
+    };
+    document.addEventListener('pointerdown', onPointerDown);
+    document.addEventListener('keydown', onKeydown);
+    this.destroyRef.onDestroy(() => {
+      document.removeEventListener('pointerdown', onPointerDown);
+      document.removeEventListener('keydown', onKeydown);
+    });
   }
 
   private initTheme(): void {

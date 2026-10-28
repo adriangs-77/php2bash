@@ -15,6 +15,62 @@
       }
     </nav>
 
+    <span class="utc" title="Hora UTC actual. El incidente se cronologiza en UTC.">
+      UTC <b>{{ clock() }}</b>
+    </span>
+
+    <div class="cvd">
+      <button
+        type="button"
+        class="cvd-btn"
+        (click)="toggleCvdMenu()"
+        [attr.aria-expanded]="cvdMenuOpen()"
+        [attr.aria-controls]="cvdMenuOpen() ? 'cvd-menu' : null"
+        aria-haspopup="true"
+        [attr.title]="'Paleta accesible: ' + cvdActiveLabel()"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor" stroke="none" opacity="0.55" />
+        </svg>
+        <span class="cvd-label">{{ cvdActiveLabel() }}</span>
+        <span class="cvd-caret" aria-hidden="true">▾</span>
+      </button>
+
+      @if (cvdMenuOpen()) {
+        <div class="cvd-menu" id="cvd-menu" role="menu" aria-labelledby="cvd-menu-title">
+          <p class="cvd-title" id="cvd-menu-title" aria-hidden="true">Paleta accesible</p>
+          <div role="group" aria-labelledby="cvd-menu-title">
+            @for (option of cvdOptions; track option.id) {
+              <button
+                type="button"
+                class="cvd-opt"
+                role="menuitemradio"
+                [attr.aria-checked]="cvd() === option.id"
+                [attr.data-swatch]="option.id"
+                (click)="selectCvd(option.id)"
+              >
+                <span class="cvd-swatches" aria-hidden="true">
+                  <i></i><i></i><i></i><i></i>
+                </span>
+                <span>
+                  {{ option.label }}
+                  <small>{{ option.hint }}</small>
+                </span>
+                @if (cvd() === option.id) {
+                  <span class="check" aria-hidden="true">✓</span>
+                }
+              </button>
+            }
+          </div>
+          <p class="cvd-note">
+            Los colores se ajustan para deuteranopía, protanopía y tritanopía. Los estados críticos también llevan
+            icono y texto, no solo color.
+          </p>
+        </div>
+      }
+    </div>
+
     <button
       type="button"
       class="icon-btn"
@@ -61,6 +117,15 @@
       <p class="disclaimer" style="margin-top: 10px">
         Si detectas un compromiso, preserva la evidencia antes de reinstalar y contacta con tu CSIRT o con INCIBE-CERT.
       </p>
+      <p class="footer-build">
+        <span aria-hidden="true">/*</span> dossier v1.0 · build 22 oct 2026 · SSR · sin cookies ni analítica
+        <span aria-hidden="true">*/</span>
+      </p>
+      <div class="footer-keys">
+        <span><kbd class="kbd">t</kbd> tema claro / oscuro</span>
+        <span><kbd class="kbd">c</kbd> paletas accesibles</span>
+        <span><kbd class="kbd">esc</kbd> cerrar menú</span>
+      </div>
     </div>
     <a class="to-top" href="#inicio">↑ Volver al inicio</a>
   </div>
