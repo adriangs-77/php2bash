@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:pages": "ng build --base-href=/php2bash/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:php2bash": "node dist/php2bash/server/server.mjs"

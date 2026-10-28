@@ -35,6 +35,26 @@ npm run build      # build de producción con SSR
 npm run serve:ssr:php2bash   # sirve el build SSR en :4000
 ```
 
+## Despliegue en GitHub Pages
+
+El sitio se publica en <https://adriangs-77.github.io/php2bash/> mediante el workflow
+`.github/workflows/deploy-pages.yml`, que se ejecuta en cada push a `master`:
+
+1. `npm run build:pages` compila la app con `--base-href=/php2bash/` (imprescindible:
+   Pages sirve el sitio bajo el prefijo del repositorio, no en la raíz del dominio).
+2. Como las rutas de servidor usan `RenderMode.Prerender`, el build genera un
+   `index.html` estático ya renderizado en `dist/php2bash/browser/`.
+3. El workflow sube **solo** esa carpeta como artefacto de Pages; el bundle de
+   servidor (`dist/php2bash/server/`) se ignora porque Pages no ejecuta Node.
+
+Requisito: en *Settings → Pages* el origen debe ser **GitHub Actions**
+(`build_type: workflow`), no una rama. Para probar el despliegue a mano:
+
+```bash
+npm run build:pages
+npx http-server dist/php2bash/browser -o   # o sirve la carpeta bajo /php2bash/
+```
+
 ## Notas técnicas
 
 - Angular standalone + signals, control de flujo `@if`/`@for`/`@switch`, sin Zone.js.
